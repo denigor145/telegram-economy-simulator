@@ -1,29 +1,4 @@
-# Конфигурационные файлы с секретами
 config/config.js
 config/
-
-# Файлы окружения
-.env
-.env.local
-.env.production
-
-# Логи
 *.log
-logs/
-
-# Зависимости
-node_modules/
-
-# Системные файлы
 .DS_Store
-Thumbs.db
-
-# IDE файлы
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Временные файлы
-*.tmp
-*.temp
