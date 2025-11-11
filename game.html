@@ -8,56 +8,107 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; color: white; padding: 20px;
+            background-image: url('sales-pers1.jpg'); /* ТВОЯ КАРТИНКА НА ФОН */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+            position: relative;
         }
-        .container { max-width: 400px; margin: 0 auto; }
+        /* Тёмный overlay чтобы текст читался */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+        .container { 
+            max-width: 400px; 
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
         .character-info { 
-            background: rgba(255,255,255,0.1); padding: 20px; 
-            border-radius: 15px; margin-bottom: 20px; 
+            background: rgba(255,255,255,0.2); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        
-        /* Стили для картинки соперника */
-        .opponent-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            display: block;
-            margin: 0 auto 15px auto;
-            border: 3px solid #ffd700;
-        }
-        
         .health-bar { 
-            background: rgba(255,255,255,0.2); height: 30px;
-            border-radius: 15px; margin: 10px 0; position: relative; overflow: hidden;
+            background: rgba(255,255,255,0.2); 
+            height: 30px;
+            border-radius: 15px; 
+            margin: 10px 0; 
+            position: relative; 
+            overflow: hidden;
         }
         .health-fill { 
-            background: linear-gradient(90deg, #4CAF50, #8BC34A); height: 100%; 
-            width: 100%; border-radius: 15px; transition: width 0.5s ease;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A); 
+            height: 100%; 
+            width: 100%; 
+            border-radius: 15px; 
+            transition: width 0.5s ease;
         }
         .health-text { 
-            position: absolute; top: 50%; left: 50%; 
-            transform: translate(-50%, -50%); font-weight: bold;
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-weight: bold;
         }
         .btn-action { 
-            background: #ff6b6b; color: white; border: none;
-            padding: 15px 30px; font-size: 16px; border-radius: 25px;
-            cursor: pointer; width: 100%; margin: 10px 0;
+            background: #ff6b6b; 
+            color: white; 
+            border: none;
+            padding: 15px 30px; 
+            font-size: 16px; 
+            border-radius: 25px;
+            cursor: pointer; 
+            width: 100%; 
+            margin: 10px 0;
         }
         .inventory { 
-            background: rgba(255,255,255,0.1); padding: 15px;
-            border-radius: 15px; margin-top: 20px;
+            background: rgba(255,255,255,0.2); 
+            padding: 15px;
+            border-radius: 15px; 
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
         }
-        .inventory-items { display: flex; justify-content: space-around; margin-top: 10px; }
+        .inventory-items { 
+            display: flex; 
+            justify-content: space-around; 
+            margin-top: 10px; 
+        }
         .modal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: flex; align-items: center;
-            justify-content: center; z-index: 1000;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0,0,0,0.8); 
+            display: flex; 
+            align-items: center;
+            justify-content: center; 
+            z-index: 1000;
         }
         .modal-content { 
-            background: white; color: #333; padding: 30px;
-            border-radius: 20px; text-align: center; max-width: 300px; width: 90%;
+            background: white; 
+            color: #333; 
+            padding: 30px;
+            border-radius: 20px; 
+            text-align: center; 
+            max-width: 300px; 
+            width: 90%;
         }
         .hidden { display: none !important; }
     </style>
@@ -65,8 +116,6 @@
 <body>
     <div class="container">
         <div class="character-info">
-            <!-- Картинка соперника -->
-            <img id="opponentImage" src="" alt="Соперник" class="opponent-image">
             <h2 id="characterName">Персонаж</h2>
             <div class="health-bar">
                 <div class="health-fill" id="healthFill"></div>
@@ -74,7 +123,7 @@
             </div>
         </div>
         
-        <button id="actionBtn" class="btn-action">Выполнить действие</button>
+        <button class="btn-action" onclick="performAction()">Выполнить действие</button>
         
         <div class="inventory">
             <h3>Инвентарь</h3>
@@ -91,7 +140,7 @@
             <h2>🎉 Победа!</h2>
             <p>+10 золотых</p>
             <p id="itemReward"></p>
-            <button id="toMainMenuWin" class="btn-action">В главное меню</button>
+            <button class="btn-action" onclick="goToMainMenu()">В главное меню</button>
         </div>
     </div>
 
@@ -99,7 +148,7 @@
     <div id="loseModal" class="modal hidden">
         <div class="modal-content">
             <h2>💀 Поражение</h2>
-            <button id="toMainMenuLose" class="btn-action">В главное меню</button>
+            <button class="btn-action" onclick="goToMainMenu()">В главное меню</button>
         </div>
     </div>
 
@@ -108,13 +157,11 @@
         const opponents = [
             {
                 name: "Воин",
-                image: 'sales-pers1.jpg', // ТВОЯ КАРТИНКА
                 maxHealth: 100,
                 health: 100
             },
             {
                 name: "Маг", 
-                image: 'sales-pers2.jpg', // ТВОЯ ВТОРАЯ КАРТИНКА  
                 maxHealth: 120,
                 health: 120
             }
@@ -131,6 +178,14 @@
         function selectRandomOpponent() {
             const randomIndex = Math.floor(Math.random() * opponents.length);
             currentOpponent = {...opponents[randomIndex]};
+            
+            // Меняем фон в зависимости от соперника
+            if (currentOpponent.name === "Воин") {
+                document.body.style.backgroundImage = "url('sales-pers1.jpg')";
+            } else {
+                document.body.style.backgroundImage = "url('sales-pers2.jpg')";
+            }
+            
             updateUI();
         }
         
@@ -174,19 +229,11 @@
             document.getElementById('healthText').textContent = `${currentOpponent.health}/${currentOpponent.maxHealth}`;
             document.getElementById('goldCount').textContent = gold;
             document.getElementById('horseshoeCount').textContent = horseshoes;
-            
-            // Устанавливаем картинку
-            document.getElementById('opponentImage').src = currentOpponent.image;
         }
         
         function goToMainMenu() {
             window.location.href = 'index.html';
         }
-        
-        // Назначаем обработчики событий
-        document.getElementById('actionBtn').addEventListener('click', performAction);
-        document.getElementById('toMainMenuWin').addEventListener('click', goToMainMenu);
-        document.getElementById('toMainMenuLose').addEventListener('click', goToMainMenu);
         
         // Начинаем игру
         selectRandomOpponent();
