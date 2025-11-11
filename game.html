@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-image: url('images/sales-pers1.jpg'); /* ТВОЯ КАРТИНКА НА ФОН */
+            background-image: url('images/sales-pers1.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -18,8 +18,7 @@
             padding: 20px;
             position: relative;
         }
-        /* Тёмный overlay чтобы текст читался */
-        /*
+        /* Тёмный overlay с частичным затемнением */
         body::before {
             content: '';
             position: absolute;
@@ -27,29 +26,24 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.3); /* Частичное затемнение */
             z-index: -1;
         }
-        */
-        .container { 
-            max-width: 400px; 
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-        .character-info { 
-            background: rgba(255,255,255,0.2); 
-            padding: 20px; 
-            border-radius: 15px; 
-            margin-bottom: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
+        
+        /* Полоса жизни - размещена сверху посередине */
+        .health-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 300px;
+            z-index: 10;
         }
         .health-bar { 
             background: rgba(255,255,255,0.2); 
             height: 30px;
             border-radius: 15px; 
-            margin: 10px 0; 
             position: relative; 
             overflow: hidden;
         }
@@ -67,6 +61,8 @@
             transform: translate(-50%, -50%); 
             font-weight: bold;
         }
+        
+        /* Кнопка действия - прикреплена к нижнему краю */
         .btn-action { 
             background: #ff6b6b; 
             color: white; 
@@ -75,22 +71,18 @@
             font-size: 16px; 
             border-radius: 25px;
             cursor: pointer; 
-            width: 100%; 
-            margin: 10px 0;
+            width: 200px; /* Ширина в 2 раза больше высоты */
+            height: 50px; /* Высота */
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .inventory { 
-            background: rgba(255,255,255,0.2); 
-            padding: 15px;
-            border-radius: 15px; 
-            margin-top: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .inventory-items { 
-            display: flex; 
-            justify-content: space-around; 
-            margin-top: 10px; 
-        }
+        
+        /* Модальные окна */
         .modal { 
             position: fixed; 
             top: 0; 
@@ -116,25 +108,16 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="character-info">
-            <h2 id="characterName">Персонаж</h2>
-            <div class="health-bar">
-                <div class="health-fill" id="healthFill"></div>
-                <span class="health-text" id="healthText">100/150</span>
-            </div>
-        </div>
-        
-        <button class="btn-action" onclick="performAction()">Выполнить действие</button>
-        
-        <div class="inventory">
-            <h3>Инвентарь</h3>
-            <div class="inventory-items">
-                <div>Золото: <span id="goldCount">0</span></div>
-                <div>Подковы: <span id="horseshoeCount">0</span></div>
-            </div>
+    <!-- Полоса жизни -->
+    <div class="health-container">
+        <div class="health-bar">
+            <div class="health-fill" id="healthFill"></div>
+            <span class="health-text" id="healthText">100/100</span>
         </div>
     </div>
+    
+    <!-- Кнопка действия -->
+    <button class="btn-action" onclick="performAction()">Выполнить действие</button>
 
     <!-- Модальное окно победы -->
     <div id="winModal" class="modal hidden">
@@ -159,12 +142,12 @@
         const opponents = [
             {
                 name: "Воин",
-                maxHealth: 100,
+                maxHealth: 120,
                 health: 100
             },
             {
                 name: "Маг", 
-                maxHealth: 120,
+                maxHealth: 150,
                 health: 120
             }
         ];
@@ -228,11 +211,8 @@
         function updateUI() {
             if (!currentOpponent) return;
 
-            document.getElementById('characterName').textContent = currentOpponent.name;
             document.getElementById('healthFill').style.width = `${(currentOpponent.health / currentOpponent.maxHealth) * 100}%`;
             document.getElementById('healthText').textContent = `${currentOpponent.health}/${currentOpponent.maxHealth}`;
-            document.getElementById('goldCount').textContent = gold;
-            document.getElementById('horseshoeCount').textContent = horseshoes;
         }
         
         function goToMainMenu() {
