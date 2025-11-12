@@ -20,7 +20,8 @@
         .btn-primary { 
             background: #ff6b6b; color: white; border: none;
             padding: 15px 30px; font-size: 16px; border-radius: 25px;
-            cursor: pointer; width: 100%; transition: background 0.3s;
+            cursor: pointer; width: 100%; margin: 10px 0;
+            transition: background 0.3s;
         }
         .btn-primary:hover { background: #ff5252; }
     </style>
@@ -30,6 +31,7 @@
         <div class="main-menu">
             <h1>💰 Экономический Симулятор</h1>
             <button onclick="startGame()" class="btn-primary">Начать игру</button>
+            <button onclick="goToCharacter()" class="btn-primary">Персонаж</button>
         </div>
     </div>
     <script>
@@ -37,9 +39,15 @@
             window.location.href = 'game.html';
         }
         
-        // Инициализация Telegram WebApp
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+        function goToCharacter() {
+            window.location.href = 'character.html';
+        }
+        
+        // Инициализация Telegram WebApp (с проверкой)
+        if (window.Telegram && window.Telegram.WebApp) {
+            let tg = window.Telegram.WebApp;
+            tg.expand();
+        }
     </script>
 </body>
 </html>
