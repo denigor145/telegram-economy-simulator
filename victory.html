@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Победа!</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .trophy {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        .rewards {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .reward-total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid rgba(255,255,255,0.3);
+        }
+        .btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .btn-play-again {
+            background: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="trophy">🏆</div>
+            <h1>Победа!</h1>
+            <p>Поздравляем с успешной сделкой!</p>
+        </div>
+
+        <div class="rewards">
+            <h3>Ваша награда:</h3>
+            <div id="rewardsList">
+                <!-- Награды будут добавлены через JavaScript -->
+            </div>
+            <div class="reward-total" id="totalReward">
+                <!-- Общая сумма будет добавлена через JavaScript -->
+            </div>
+        </div>
+
+        <button class="btn btn-play-again" onclick="playAgain()">Играть еще раз</button>
+        <button class="btn" onclick="goToMainMenu()">В главное меню</button>
+    </div>
+
+    <script src="js/opponents-data.js"></script>
+    <script>
+        function getOpponentById(id) {
+            return opponents.find(opponent => opponent.id === parseInt(id));
+        }
+
+        function calculateRewards() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const opponentId = urlParams.get('id');
+            const opponent = getOpponentById(opponentId);
+
+            if (!opponent) return;
+
+            const rewardsList = document.getElementById('rewardsList');
+            let totalMoney = 0;
+            const earnedItems = [];
+
+            // Обрабатываем дроп
+            opponent.drops.forEach(drop => {
+                if (drop.name === 'money') {
+                    // Генерируем случайную сумму денег
+                    const moneyEarned = Math.floor(Math.random() * (drop.max - drop.min + 1)) + drop.min;
+                    totalMoney += moneyEarned;
+                    
+                    const moneyElement = document.createElement('div');
+                    moneyElement.className = 'reward-item';
+                    moneyElement.innerHTML = `
+                        <span>💰 Деньги</span>
+                        <span>+${moneyEarned}</span>
+                    `;
+                    rewardsList.appendChild(moneyElement);
+                } else {
+                    // Проверяем выпадение предмета по шансу
+                    if (Math.random() * 100 <= drop.chance) {
+                        earnedItems.push(drop);
+                        
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'reward-item';
+                        itemElement.innerHTML = `
+                            <span>${getItemIcon(drop.name)} ${drop.name}</span>
+                            <span>+1</span>
+                        `;
+                        rewardsList.appendChild(itemElement);
+                    }
+                }
+            });
+
+            // Показываем общую сумму
+            document.getElementById('totalReward').textContent = `Всего: ${totalMoney} денег`;
+
+            // Сохраняем награды (можно сохранить в localStorage или отправить на сервер)
+            saveRewards(totalMoney, earnedItems);
+        }
+
+        function getItemIcon(itemName) {
+            const icons = {
+                'трава': '🌿',
+                'веревка': '🪢',
+                'вода': '💧',
+                'бумага': '📄'
+            };
+            return icons[itemName] || '📦';
+        }
+
+        function saveRewards(money, items) {
+            // Здесь можно сохранить награды в localStorage или отправить на сервер
+            console.log('Награды:', { money, items });
+            // localStorage.setItem('playerMoney', money);
+            // localStorage.setItem('playerItems', JSON.stringify(items));
+        }
+
+        function playAgain() {
+            // Возвращаемся к игре с тем же соперником или случайным
+            const urlParams = new URLSearchParams(window.location.search);
+            const opponentId = urlParams.get('id');
+            window.location.href = `game.html?id=${opponentId}`;
+        }
+
+        function goToMainMenu() {
+            window.location.href = 'index.html';
+        }
+
+        // Рассчитываем награды при загрузке страницы
+        calculateRewards();
+    </script>
+</body>
+</html>
