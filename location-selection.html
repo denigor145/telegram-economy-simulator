@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор магазина</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            color: white; 
+        }
+        .container { 
+            max-width: 400px; 
+            margin: 0 auto; 
+            padding: 20px;
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+        .location-selection { 
+            text-align: center; 
+            width: 100%; 
+        }
+        h1 { 
+            margin-bottom: 30px; 
+            font-size: 24px; 
+        }
+        .location-btn { 
+            background: #ff6b6b; 
+            color: white; 
+            border: none;
+            padding: 15px 30px; 
+            font-size: 16px; 
+            border-radius: 25px;
+            cursor: pointer; 
+            width: 100%; 
+            margin: 10px 0;
+            transition: all 0.3s;
+        }
+        .location-btn:hover { 
+            background: #ff5252; 
+            transform: scale(1.05);
+        }
+        .location-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-back {
+            background: #6b6bff;
+            margin-top: 20px;
+        }
+        .coming-soon {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="location-selection">
+            <h1>🏪 Выбор магазина</h1>
+            <button class="location-btn" onclick="selectLocation('products')">
+                🛒 Продуктовый магазин
+            </button>
+            <button class="location-btn" disabled>
+                👕 Магазин одежды
+                <div class="coming-soon">скоро</div>
+            </button>
+            <button class="location-btn" disabled>
+                📱 Магазин электроники
+                <div class="coming-soon">скоро</div>
+            </button>
+            <button class="location-btn" disabled>
+                🛋️ Мебельный магазин
+                <div class="coming-soon">скоро</div>
+            </button>
+            <button class="location-btn btn-back" onclick="goToMainMenu()">
+                ← Назад
+            </button>
+        </div>
+    </div>
+    <script>
+        function selectLocation(locationType) {
+            if (locationType === 'products') {
+                window.location.href = 'game.html?location=products';
+            }
+        }
+
+        function goToMainMenu() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
