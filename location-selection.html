@@ -49,26 +49,16 @@
             background: #ff5252; 
             transform: scale(1.05);
         }
-        .location-btn:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
         .btn-back {
             background: #6b6bff;
             margin-top: 30px;
-        }
-        .coming-soon {
-            font-size: 12px;
-            opacity: 0.8;
-            margin-top: 5px;
         }
         .location-icon {
             font-size: 20px;
         }
         .shops-grid {
             display: flex;
-            flex-direction: column-reverse; /* Обратный порядок для расположения снизу вверх */
+            flex-direction: column-reverse;
             gap: 10px;
             margin-bottom: 20px;
         }
@@ -87,24 +77,21 @@
                 </button>
                 
                 <!-- Одежда -->
-                <button class="location-btn" disabled>
+                <button class="location-btn" onclick="selectLocation('clothing')">
                     <span class="location-icon">👕</span>
                     Одежда
-                    <div class="coming-soon">скоро</div>
                 </button>
                 
                 <!-- Электроника -->
-                <button class="location-btn" disabled>
+                <button class="location-btn" onclick="selectLocation('electronics')">
                     <span class="location-icon">📱</span>
                     Электроника
-                    <div class="coming-soon">скоро</div>
                 </button>
                 
                 <!-- Мебель (самая верхняя кнопка) -->
-                <button class="location-btn" disabled>
+                <button class="location-btn" onclick="selectLocation('furniture')">
                     <span class="location-icon">🛋️</span>
                     Мебель
-                    <div class="coming-soon">скоро</div>
                 </button>
             </div>
 
@@ -119,16 +106,15 @@
             if (locationType === 'products') {
                 window.location.href = 'products-map.html';
             }
-            // Для других локаций можно добавить переходы на соответствующие карты
-            // else if (locationType === 'clothing') {
-            //     window.location.href = 'clothing-map.html';
-            // }
-            // else if (locationType === 'electronics') {
-            //     window.location.href = 'electronics-map.html';
-            // }
-            // else if (locationType === 'furniture') {
-            //     window.location.href = 'furniture-map.html';
-            // }
+            else if (locationType === 'clothing') {
+                window.location.href = 'clothing-map.html';
+            }
+            else if (locationType === 'electronics') {
+                window.location.href = 'electronics-map.html';
+            }
+            else if (locationType === 'furniture') {
+                window.location.href = 'furniture-map.html';
+            }
         }
 
         function goToMainMenu() {
