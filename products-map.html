@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продуктовый отдел - Экономический симулятор</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Заголовок */
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px 0;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        /* Карта */
+        .map-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Верхний участок - Частные лавки */
+        .top-area {
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        .top-area:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.02);
+        }
+        .area-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .area-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+        
+        /* Основная сетка */
+        .main-grid {
+            flex: 1;
+            display: flex;
+            gap: 20px; /* Центральный пробел 20% */
+        }
+        
+        /* Боковые колонки */
+        .left-column, .right-column {
+            flex: 2; /* 40% ширины каждая */
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        /* Центральный пробел */
+        .center-space {
+            flex: 1; /* 20% ширины */
+        }
+        
+        /* Участки */
+        .area {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255,255,255,0.2);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 60px;
+        }
+        .area:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        .area-level {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+        .area-difficulty {
+            font-size: 10px;
+            opacity: 0.7;
+        }
+        
+        /* Кнопка выхода */
+        .exit-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .exit-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="page-header">
+            <h1>🛒 Продукты</h1>
+        </div>
+        
+        <!-- Карта -->
+        <div class="map-container">
+            <!-- Верхний участок - Частные лавки -->
+            <div class="top-area" onclick="startGame('private_shops', 1)">
+                <div class="area-title">🏪 Частные лавки</div>
+                <div class="area-subtitle">Элитные покупатели • Высокие награды</div>
+            </div>
+            
+            <!-- Основная сетка -->
+            <div class="main-grid">
+                <!-- Левая колонка -->
+                <div class="left-column">
+                    <div class="area" onclick="startGame('left', 1)">
+                        <div class="area-level">Участок Л1</div>
+                        <div class="area-difficulty">★ Легкий</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 2)">
+                        <div class="area-level">Участок Л2</div>
+                        <div class="area-difficulty">★ Легкий</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 3)">
+                        <div class="area-level">Участок Л3</div>
+                        <div class="area-difficulty">★★ Средний</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 4)">
+                        <div class="area-level">Участок Л4</div>
+                        <div class="area-difficulty">★★ Средний</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 5)">
+                        <div class="area-level">Участок Л5</div>
+                        <div class="area-difficulty">★★★ Сложный</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 6)">
+                        <div class="area-level">Участок Л6</div>
+                        <div class="area-difficulty">★★★ Сложный</div>
+                    </div>
+                    <div class="area" onclick="startGame('left', 7)">
+                        <div class="area-level">Участок Л7</div>
+                        <div class="area-difficulty">★★★★ Эксперт</div>
+                    </div>
+                </div>
+                
+                <!-- Центральный пробел -->
+                <div class="center-space"></div>
+                
+                <!-- Правая колонка -->
+                <div class="right-column">
+                    <div class="area" onclick="startGame('right', 1)">
+                        <div class="area-level">Участок П1</div>
+                        <div class="area-difficulty">★ Легкий</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 2)">
+                        <div class="area-level">Участок П2</div>
+                        <div class="area-difficulty">★ Легкий</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 3)">
+                        <div class="area-level">Участок П3</div>
+                        <div class="area-difficulty">★★ Средний</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 4)">
+                        <div class="area-level">Участок П4</div>
+                        <div class="area-difficulty">★★ Средний</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 5)">
+                        <div class="area-level">Участок П5</div>
+                        <div class="area-difficulty">★★★ Сложный</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 6)">
+                        <div class="area-level">Участок П6</div>
+                        <div class="area-difficulty">★★★ Сложный</div>
+                    </div>
+                    <div class="area" onclick="startGame('right', 7)">
+                        <div class="area-level">Участок П7</div>
+                        <div class="area-difficulty">★★★★ Эксперт</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Кнопка выхода -->
+        <button class="exit-btn" onclick="goBack()">
+            ← Выйти в торговый центр
+        </button>
+    </div>
+
+    <script>
+        function startGame(area, level) {
+            // Передаем информацию о выбранном участке и уровне сложности
+            window.location.href = `game.html?area=${area}&level=${level}`;
+        }
+
+        function goBack() {
+            window.location.href = 'location-selection.html';
+        }
+    </script>
+</body>
+</html>
