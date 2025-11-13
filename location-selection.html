@@ -117,8 +117,18 @@
     <script>
         function selectLocation(locationType) {
             if (locationType === 'products') {
-                window.location.href = 'game.html?location=products';
+                window.location.href = 'products-map.html';
             }
+            // Для других локаций можно добавить переходы на соответствующие карты
+            // else if (locationType === 'clothing') {
+            //     window.location.href = 'clothing-map.html';
+            // }
+            // else if (locationType === 'electronics') {
+            //     window.location.href = 'electronics-map.html';
+            // }
+            // else if (locationType === 'furniture') {
+            //     window.location.href = 'furniture-map.html';
+            // }
         }
 
         function goToMainMenu() {
