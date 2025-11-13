@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игра - Экономический симулятор</title>
+    <title>Продуктовый магазин - Экономический симулятор</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -28,6 +28,24 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.3);
             z-index: -1;
+        }
+        
+        /* Заголовок локации */
+        .location-header {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+
+        .location-header h2 {
+            font-size: 16px;
+            margin: 0;
         }
         
         /* Аватарка соперника */
@@ -180,9 +198,14 @@
     </style>
 </head>
 <body>
+    <!-- Заголовок локации -->
+    <div class="location-header">
+        <h2>🛒 Продуктовый магазин</h2>
+    </div>
+
     <!-- Аватарка соперника -->
     <div class="opponent-avatar" onclick="showOpponentInfo()">
-        <div class="avatar-circle" id="opponentAvatar">🔴</div>
+        <div class="avatar-circle" id="opponentAvatar">👩‍💼</div>
     </div>
     
     <!-- Показатели персонажа -->
@@ -251,7 +274,7 @@
             currentOpponent = {...opponents[randomIndex]};
             
             // Меняем фон в зависимости от соперника
-            if (currentOpponent.name === "Воин") {
+            if (currentOpponent.name === "Екатерина Марковна") {
                 document.body.style.backgroundImage = "url('images/sales-pers1.jpg')";
             } else {
                 document.body.style.backgroundImage = "url('images/sales-pers2.jpg')";
