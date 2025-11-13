@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор магазина</title>
+    <title>Торговый центр - Экономический симулятор</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -26,7 +26,7 @@
             width: 100%; 
         }
         h1 { 
-            margin-bottom: 30px; 
+            margin-bottom: 40px; 
             font-size: 24px; 
         }
         .location-btn { 
@@ -38,8 +38,12 @@
             border-radius: 25px;
             cursor: pointer; 
             width: 100%; 
-            margin: 10px 0;
+            margin: 8px 0;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
         .location-btn:hover { 
             background: #ff5252; 
@@ -52,36 +56,61 @@
         }
         .btn-back {
             background: #6b6bff;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         .coming-soon {
             font-size: 12px;
             opacity: 0.8;
             margin-top: 5px;
         }
+        .location-icon {
+            font-size: 20px;
+        }
+        .shops-grid {
+            display: flex;
+            flex-direction: column-reverse; /* Обратный порядок для расположения снизу вверх */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="location-selection">
-            <h1>🏪 Выбор магазина</h1>
-            <button class="location-btn" onclick="selectLocation('products')">
-                🛒 Продуктовый магазин
-            </button>
-            <button class="location-btn" disabled>
-                👕 Магазин одежды
-                <div class="coming-soon">скоро</div>
-            </button>
-            <button class="location-btn" disabled>
-                📱 Магазин электроники
-                <div class="coming-soon">скоро</div>
-            </button>
-            <button class="location-btn" disabled>
-                🛋️ Мебельный магазин
-                <div class="coming-soon">скоро</div>
-            </button>
+            <h1>🏬 Торговый центр</h1>
+            
+            <div class="shops-grid">
+                <!-- Продукты (самая нижняя кнопка) -->
+                <button class="location-btn" onclick="selectLocation('products')">
+                    <span class="location-icon">🛒</span>
+                    Продукты
+                </button>
+                
+                <!-- Одежда -->
+                <button class="location-btn" disabled>
+                    <span class="location-icon">👕</span>
+                    Одежда
+                    <div class="coming-soon">скоро</div>
+                </button>
+                
+                <!-- Электроника -->
+                <button class="location-btn" disabled>
+                    <span class="location-icon">📱</span>
+                    Электроника
+                    <div class="coming-soon">скоро</div>
+                </button>
+                
+                <!-- Мебель (самая верхняя кнопка) -->
+                <button class="location-btn" disabled>
+                    <span class="location-icon">🛋️</span>
+                    Мебель
+                    <div class="coming-soon">скоро</div>
+                </button>
+            </div>
+
             <button class="location-btn btn-back" onclick="goToMainMenu()">
-                ← Назад
+                <span class="location-icon">←</span>
+                Назад
             </button>
         </div>
     </div>
