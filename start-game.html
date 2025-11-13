@@ -113,10 +113,9 @@
                 </button>
 
                 <!-- Вокзал -->
-                <button class="location-btn" disabled>
+                <button class="location-btn" onclick="selectLocation('station')">
                     <span class="location-icon">🚉</span>
                     Вокзал
-                    <div class="coming-soon">скоро</div>
                 </button>
 
                 <!-- Промышленная зона -->
@@ -138,6 +137,9 @@
             if (locationType === 'mall') {
                 window.location.href = 'location-selection.html';
             }
+            else if (locationType === 'station') {
+                window.location.href = 'station-map.html';
+            }
             // Для других локаций можно будет добавить позже
             // else if (locationType === 'residential') {
             //     window.location.href = 'residential-map.html';
@@ -147,9 +149,6 @@
             // }
             // else if (locationType === 'administration') {
             //     window.location.href = 'administration-map.html';
-            // }
-            // else if (locationType === 'station') {
-            //     window.location.href = 'station-map.html';
             // }
             // else if (locationType === 'industrial') {
             //     window.location.href = 'industrial-map.html';
