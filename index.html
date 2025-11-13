@@ -9,14 +9,26 @@
         body { 
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh; color: white; 
+            min-height: 100vh; 
+            color: white; 
         }
         .container { 
-            max-width: 400px; margin: 0 auto; padding: 20px;
-            min-height: 100vh; display: flex; align-items: center; justify-content: center;
+            max-width: 400px; 
+            margin: 0 auto; 
+            padding: 20px;
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
         }
-        .main-menu { text-align: center; width: 100%; }
-        h1 { margin-bottom: 30px; font-size: 24px; }
+        .main-menu { 
+            text-align: center; 
+            width: 100%; 
+        }
+        h1 { 
+            margin-bottom: 30px; 
+            font-size: 24px; 
+        }
         .btn-primary { 
             background: #ff6b6b; 
             color: white; 
@@ -27,22 +39,45 @@
             cursor: pointer; 
             width: 100%; 
             margin: 10px 0;
-            transition: background 0.3s;
+            transition: background 0.3s, transform 0.2s;
         }
-        .btn-primary:hover { background: #ff5252; }
+        .btn-primary:hover { 
+            background: #ff5252; 
+            transform: scale(1.05);
+        }
+        .game-title {
+            font-size: 28px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .menu-icon {
+            font-size: 20px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="main-menu">
-            <h1>💰 Экономический Симулятор</h1>
-            <button onclick="startGame()" class="btn-primary">Начать игру</button>
-            <button onclick="goToCharacter()" class="btn-primary">Персонаж</button>
+            <h1 class="game-title">💰 Экономический Симулятор</h1>
+            <button onclick="startGame()" class="btn-primary">
+                <span class="menu-icon">🎮</span>Начать игру
+            </button>
+            <button onclick="goToSkills()" class="btn-primary">
+                <span class="menu-icon">🎯</span>Умения
+            </button>
+            <button onclick="goToCharacter()" class="btn-primary">
+                <span class="menu-icon">👤</span>Персонаж
+            </button>
         </div>
     </div>
     <script>
         function startGame() {
             window.location.href = 'location-selection.html';
+        }
+        
+        function goToSkills() {
+            window.location.href = 'skills.html';
         }
         
         function goToCharacter() {
@@ -53,6 +88,11 @@
         if (window.Telegram && window.Telegram.WebApp) {
             let tg = window.Telegram.WebApp;
             tg.expand();
+        }
+
+        // Проверяем есть ли сохраненная игра
+        if (localStorage.getItem('playerSkills')) {
+            // Можно добавить кнопку "Продолжить" если нужно
         }
     </script>
 </body>
