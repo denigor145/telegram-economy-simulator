@@ -156,35 +156,37 @@
             font-weight: bold;
         }
         
-        /* Кнопки умений */
+        /* Кнопки умений - в один ряд */
         .skills-container {
             position: fixed;
             bottom: 80px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             justify-content: center;
-            max-width: 400px;
+            max-width: 95%;
             z-index: 10;
+            padding: 0 10px;
         }
         
         .skill-btn {
             background: #4CAF50;
             color: white;
             border: none;
-            padding: 12px;
-            font-size: 12px;
-            border-radius: 10px;
+            padding: 8px;
+            font-size: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             transition: all 0.3s;
+            position: relative;
+            flex-shrink: 0;
         }
         
         .skill-btn:hover:not(:disabled) {
@@ -199,12 +201,12 @@
         }
         
         .skill-icon {
-            font-size: 20px;
-            margin-bottom: 5px;
+            font-size: 18px;
+            margin-bottom: 3px;
         }
         
         .skill-name {
-            font-size: 9px;
+            font-size: 8px;
             line-height: 1.1;
             text-align: center;
         }
@@ -216,11 +218,26 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.7);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .global-cooldown-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 5;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
             font-weight: bold;
         }
     </style>
@@ -229,6 +246,11 @@
     <!-- Заголовок локации -->
     <div class="location-header">
         <h2>🛒 Продуктовый магазин</h2>
+    </div>
+
+    <!-- Общий откат -->
+    <div class="global-cooldown-overlay" id="globalCooldownOverlay">
+        <div>Общий откат: <span id="globalCooldownTimer">3</span>с</div>
     </div>
 
     <!-- Аватарка соперника -->
@@ -269,23 +291,10 @@
     <script src="js/opponents-data.js"></script>
     <script src="js/skills-data.js"></script>
     <script>
-        // Характеристики аргументов (временные, пока не перейдем полностью на умения)
-        const argumentsData = {
-            argument1: {
-                power: 20,
-                enduranceCost: 10,
-                successChance: 0.55
-            },
-            argument2: {
-                power: 30,
-                enduranceCost: 15,
-                successChance: 0.45
-            }
-        };
-        
         let currentOpponent = null;
         let playerSkills = [];
         const skillCooldowns = {};
+        let globalCooldown = 0;
         
         // Инициализация Telegram (с проверкой на существование)
         if (window.Telegram && window.Telegram.WebApp) {
@@ -329,7 +338,12 @@
             const skill = playerSkills.find(s => s.id === skillId);
             if (!skill) return;
             
-            // Проверяем cooldown
+            // Проверяем общий откат
+            if (globalCooldown > Date.now()) {
+                return;
+            }
+            
+            // Проверяем индивидуальный откат
             if (skillCooldowns[skill.id] && skillCooldowns[skill.id] > Date.now()) {
                 return;
             }
@@ -356,13 +370,16 @@
                 }
             }
 
-            // Устанавливаем cooldown
-            const cooldown = 3000 + (skill.power * 100);
-            skillCooldowns[skill.id] = Date.now() + cooldown;
+            // Устанавливаем общий откат (3 секунды)
+            globalCooldown = Date.now() + 3000;
+            
+            // Устанавливаем индивидуальный откат
+            skillCooldowns[skill.id] = Date.now() + (skill.cooldown * 1000);
 
             updateUI();
             checkGameEnd();
             updateSkillButton(skill.id);
+            updateGlobalCooldown();
         }
         
         function updateSkillButton(skillId) {
@@ -377,6 +394,7 @@
                 oldOverlay.remove();
             }
             
+            // Проверяем индивидуальный откат
             if (skillCooldowns[skill.id] && skillCooldowns[skill.id] > Date.now()) {
                 button.disabled = true;
                 
@@ -398,10 +416,24 @@
             }
         }
         
+        function updateGlobalCooldown() {
+            const overlay = document.getElementById('globalCooldownOverlay');
+            const timer = document.getElementById('globalCooldownTimer');
+            
+            if (globalCooldown > Date.now()) {
+                overlay.style.display = 'flex';
+                const remaining = Math.ceil((globalCooldown - Date.now()) / 1000);
+                timer.textContent = remaining;
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+        
         function updateAllSkillButtons() {
             playerSkills.forEach(skill => {
                 updateSkillButton(skill.id);
             });
+            updateGlobalCooldown();
         }
         
         function selectRandomOpponent() {
@@ -465,7 +497,7 @@
             displaySkills();
             
             // Обновляем кнопки каждую секунду
-            setInterval(updateAllSkillButtons, 1000);
+            setInterval(updateAllSkillButtons, 100);
         }
         
         // Запускаем игру при загрузке страницы
