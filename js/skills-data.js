@@ -10,7 +10,8 @@ const skills = [
         successChance: 0.55,
         level: 1,
         maxLevel: 5,
-        equipped: true
+        equipped: true,
+        cooldown: 3  // 3 секунды
     },
     {
         id: 2,
@@ -22,7 +23,8 @@ const skills = [
         successChance: 0.45,
         level: 1,
         maxLevel: 5,
-        equipped: true
+        equipped: true,
+        cooldown: 5  // 5 секунд
     },
     {
         id: 3,
@@ -34,7 +36,8 @@ const skills = [
         successChance: 0.60,
         level: 1,
         maxLevel: 5,
-        equipped: true
+        equipped: true,
+        cooldown: 15  // 15 секунд
     },
     {
         id: 4,
@@ -46,7 +49,8 @@ const skills = [
         successChance: 0.65,
         level: 1,
         maxLevel: 5,
-        equipped: true
+        equipped: true,
+        cooldown: 20  // 20 секунд
     },
     {
         id: 5,
@@ -58,6 +62,7 @@ const skills = [
         successChance: 0.50,
         level: 1,
         maxLevel: 5,
-        equipped: true
+        equipped: true,
+        cooldown: 30  // 30 секунд
     }
 ];
