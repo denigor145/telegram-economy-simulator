@@ -2,11 +2,11 @@
 const opponents = [
     {
         id: 1,
-        name: "Воин",
+        name: "Екатерина Марковна",
         maxHealth: 100,
         health: 100,
         money: 150,
-        avatar: "🔴",
+        avatar: "👩‍💼",
         drops: [
             { name: "трава", chance: 10 },
             { name: "веревка", chance: 15 },
@@ -15,11 +15,11 @@ const opponents = [
     },
     {
         id: 2,
-        name: "Маг", 
+        name: "Сергеев Александр", 
         maxHealth: 120,
         health: 120,
         money: 200,
-        avatar: "🔵",
+        avatar: "👨‍💼",
         drops: [
             { name: "вода", chance: 20 },
             { name: "бумага", chance: 15 },
