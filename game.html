@@ -8,7 +8,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-image: url('images/sales-pers1.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -274,11 +273,7 @@
             currentOpponent = {...opponents[randomIndex]};
             
             // Меняем фон в зависимости от соперника
-            if (currentOpponent.name === "Екатерина Марковна") {
-                document.body.style.backgroundImage = "url('images/sales-pers1.jpg')";
-            } else {
-                document.body.style.backgroundImage = "url('images/sales-pers2.jpg')";
-            }
+            document.body.style.backgroundImage = `url('images/${currentOpponent.background}')`;
             
             updateUI();
             updateOpponentAvatar();
