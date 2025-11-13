@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Умения - Экономический симулятор</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .skill-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        .skill-card.equipped {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.2);
+        }
+        .skill-card:not(.equipped):hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .skill-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .skill-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .skill-description {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        .skill-stats {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        .skill-level {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #FFD700;
+        }
+        .equipped-slots {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        .equipped-title {
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .btn-back {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .upgrade-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 5px;
+            font-size: 10px;
+        }
+        .upgrade-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Умения продавца</h1>
+            <p>Выберите 5 умений для использования в магазине</p>
+        </div>
+
+        <div class="equipped-slots">
+            <div class="equipped-title">⚔️ Активные умения (5 слотов)</div>
+            <div id="equippedCount">Использовано: 0/5</div>
+        </div>
+
+        <div class="skills-grid" id="skillsGrid">
+            <!-- Умения будут загружены через JavaScript -->
+        </div>
+
+        <button class="btn-back" onclick="goToMainMenu()">В главное меню</button>
+    </div>
+
+    <script src="js/skills-data.js"></script>
+    <script>
+        let equippedSkillsCount = 0;
+
+        function loadSkills() {
+            const skillsGrid = document.getElementById('skillsGrid');
+            skillsGrid.innerHTML = '';
+
+            // Считаем количество экипированных умений
+            equippedSkillsCount = skills.filter(skill => skill.equipped).length;
+            document.getElementById('equippedCount').textContent = `Использовано: ${equippedSkillsCount}/5`;
+
+            skills.forEach(skill => {
+                const skillCard = document.createElement('div');
+                skillCard.className = `skill-card ${skill.equipped ? 'equipped' : ''}`;
+                skillCard.onclick = () => toggleSkill(skill.id);
+
+                skillCard.innerHTML = `
+                    <div class="skill-icon">${skill.icon}</div>
+                    <div class="skill-name">${skill.name}</div>
+                    <div class="skill-description">${skill.description}</div>
+                    <div class="skill-stats">
+                        Сила: ${skill.power} | Стоимость: ${skill.enduranceCost} | Шанс: ${Math.round(skill.successChance * 100)}%
+                    </div>
+                    <div class="skill-level">Уровень: ${skill.level}/${skill.maxLevel}</div>
+                    <button class="upgrade-btn" onclick="event.stopPropagation(); upgradeSkill(${skill.id})" 
+                            ${skill.level >= skill.maxLevel ? 'disabled' : ''}>
+                        Улучшить
+                    </button>
+                `;
+
+                skillsGrid.appendChild(skillCard);
+            });
+        }
+
+        function toggleSkill(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            
+            if (skill.equipped) {
+                // Снимаем умение
+                skill.equipped = false;
+                equippedSkillsCount--;
+            } else {
+                // Надеваем умение, если есть свободные слоты
+                if (equippedSkillsCount < 5) {
+                    skill.equipped = true;
+                    equippedSkillsCount++;
+                } else {
+                    alert('Все слоты заняты! Снимите другое умение сначала.');
+                    return;
+                }
+            }
+
+            // Сохраняем изменения
+            saveSkills();
+            loadSkills();
+        }
+
+        function upgradeSkill(skillId) {
+            const skill = skills.find(s => s.id === skillId);
+            if (skill.level < skill.maxLevel) {
+                skill.level++;
+                // Улучшаем характеристики (можно настроить формулу)
+                skill.power = Math.round(skill.power * 1.1);
+                skill.successChance = Math.min(skill.successChance + 0.02, 0.95);
+                
+                saveSkills();
+                loadSkills();
+                alert(`Умение "${skill.name}" улучшено до уровня ${skill.level}!`);
+            }
+        }
+
+        function saveSkills() {
+            // Сохраняем в localStorage
+            localStorage.setItem('playerSkills', JSON.stringify(skills));
+        }
+
+        function loadSavedSkills() {
+            const savedSkills = localStorage.getItem('playerSkills');
+            if (savedSkills) {
+                const parsedSkills = JSON.parse(savedSkills);
+                // Обновляем наш массив skills сохраненными данными
+                parsedSkills.forEach(savedSkill => {
+                    const skillIndex = skills.findIndex(s => s.id === savedSkill.id);
+                    if (skillIndex !== -1) {
+                        skills[skillIndex] = { ...skills[skillIndex], ...savedSkill };
+                    }
+                });
+            }
+        }
+
+        function goToMainMenu() {
+            window.location.href = 'index.html';
+        }
+
+        // Загружаем сохраненные умения и отображаем
+        loadSavedSkills();
+        loadSkills();
+    </script>
+</body>
+</html>
