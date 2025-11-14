@@ -93,13 +93,6 @@
                     Бизнес центр
                 </button>
 
-                <!-- Администрация -->
-                <button class="location-btn" disabled>
-                    <span class="location-icon">🏛️</span>
-                    Администрация
-                    <div class="coming-soon">скоро</div>
-                </button>
-
                 <!-- Вокзал -->
                 <button class="location-btn" onclick="selectLocation('station')">
                     <span class="location-icon">🚉</span>
@@ -136,10 +129,6 @@
             else if (locationType === 'industrial') {
                 window.location.href = 'industrial-map.html';
             }
-            // Для администрации можно будет добавить позже
-            // else if (locationType === 'administration') {
-            //     window.location.href = 'administration-map.html';
-            // }
         }
 
         function goToMainMenu() {
