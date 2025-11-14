@@ -88,10 +88,9 @@
                 </button>
 
                 <!-- Бизнес центр -->
-                <button class="location-btn" disabled>
+                <button class="location-btn" onclick="selectLocation('business')">
                     <span class="location-icon">🏢</span>
                     Бизнес центр
-                    <div class="coming-soon">скоро</div>
                 </button>
 
                 <!-- Администрация -->
@@ -128,16 +127,16 @@
             else if (locationType === 'residential') {
                 window.location.href = 'residential-map.html';
             }
+            else if (locationType === 'business') {
+                window.location.href = 'business-map.html';
+            }
             else if (locationType === 'station') {
                 window.location.href = 'station-map.html';
             }
             else if (locationType === 'industrial') {
                 window.location.href = 'industrial-map.html';
             }
-            // Для других локаций можно будет добавить позже
-            // else if (locationType === 'business') {
-            //     window.location.href = 'business-map.html';
-            // }
+            // Для администрации можно будет добавить позже
             // else if (locationType === 'administration') {
             //     window.location.href = 'administration-map.html';
             // }
