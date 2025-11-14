@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Жилой квартал - Экономический симулятор</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            min-height: 100vh; 
+            color: white; 
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px 0;
+        }
+        .page-header h1 {
+            font-size: 28px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 16px;
+            opacity: 0.8;
+            margin-bottom: 25px;
+        }
+        
+        .locations-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .location-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            padding: 25px 15px;
+            font-size: 14px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            min-height: 120px;
+        }
+        
+        .location-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: scale(1.05);
+        }
+        
+        .location-icon {
+            font-size: 28px;
+        }
+        
+        .location-name {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .location-description {
+            font-size: 12px;
+            opacity: 0.8;
+            text-align: center;
+        }
+        
+        .exit-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        .exit-btn:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>🏘️ Жилой квартал</h1>
+            <div class="subtitle">Социальная инфраструктура</div>
+        </div>
+        
+        <div class="locations-grid">
+            <!-- Жилой комплекс -->
+            <button class="location-btn" onclick="startLocation('residential_complex')">
+                <span class="location-icon">🏢</span>
+                <span class="location-name">Жилой комплекс</span>
+                <span class="location-description">Многоквартирные дома</span>
+            </button>
+            
+            <!-- Больница -->
+            <button class="location-btn" onclick="startLocation('hospital')">
+                <span class="location-icon">🏥</span>
+                <span class="location-name">Больница</span>
+                <span class="location-description">Медицинские услуги</span>
+            </button>
+            
+            <!-- Библиотека -->
+            <button class="location-btn" onclick="startLocation('library')">
+                <span class="location-icon">📚</span>
+                <span class="location-name">Библиотека</span>
+                <span class="location-description">Образование и знания</span>
+            </button>
+            
+            <!-- Сервисная служба -->
+            <button class="location-btn" onclick="startLocation('service')">
+                <span class="location-icon">🔧</span>
+                <span class="location-name">Сервисная служба</span>
+                <span class="location-description">Бытовые услуги</span>
+            </button>
+        </div>
+        
+        <button class="exit-btn" onclick="goBack()">
+            ← Вернуться в город
+        </button>
+    </div>
+
+    <script>
+        function startLocation(locationType) {
+            // Все социальные локации активны и ведут на игру
+            window.location.href = `game.html?area=residential&location=${locationType}`;
+        }
+
+        function goBack() {
+            window.location.href = 'start-game.html';
+        }
+    </script>
+</body>
+</html>
