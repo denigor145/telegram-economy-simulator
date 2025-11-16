@@ -22,18 +22,44 @@
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .character-screen {
             text-align: center;
             width: 100%;
         }
         h1 {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 24px;
         }
+        
+        /* Стили для вкладок */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 5px;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            background: #ff6b6b;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Стили для характеристик */
         .stats {
             background: rgba(255, 255, 255, 0.1);
             padding: 20px;
@@ -51,6 +77,60 @@
             font-size: 24px;
             font-weight: bold;
         }
+        
+        /* Стили для инвентаря */
+        .inventory-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .money-display {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .item-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .item-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .item-name {
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        .item-count {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .empty-inventory {
+            text-align: center;
+            padding: 30px;
+            opacity: 0.7;
+        }
+        
         .btn-primary {
             background: #ff6b6b;
             color: white;
@@ -71,30 +151,85 @@
 <body>
     <div class="container">
         <div class="character-screen">
-            <h1>Характеристики персонажа</h1>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-name">Выносливость</div>
-                    <div class="stat-value" id="enduranceValue">100</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-name">Стрессоустойчивость</div>
-                    <div class="stat-value" id="stressResistanceValue">100</div>
+            <h1>Персонаж</h1>
+            
+            <!-- Вкладки -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('stats')">Характеристики</div>
+                <div class="tab" onclick="switchTab('inventory')">Инвентарь</div>
+            </div>
+            
+            <!-- Вкладка характеристик -->
+            <div id="stats-tab" class="tab-content active">
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-name">Выносливость</div>
+                        <div class="stat-value" id="enduranceValue">100</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-name">Стрессоустойчивость</div>
+                        <div class="stat-value" id="stressResistanceValue">100</div>
+                    </div>
                 </div>
             </div>
+            
+            <!-- Вкладка инвентаря -->
+            <div id="inventory-tab" class="tab-content">
+                <!-- Деньги -->
+                <div class="inventory-section">
+                    <div class="section-title">Финансы</div>
+                    <div class="money-display" id="moneyCount">0 ₽</div>
+                </div>
+                
+                <!-- Предметы -->
+                <div class="inventory-section">
+                    <div class="section-title">Предметы</div>
+                    <div id="itemsContainer">
+                        <!-- Предметы будут загружены через JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
             <button class="btn-primary" onclick="goToMainMenu()">В главное меню</button>
         </div>
     </div>
 
     <script src="js/character.js"></script>
+    <script src="js/inventory.js"></script>
     <script>
+        function switchTab(tabName) {
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убираем активный класс со всех кнопок вкладок
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показываем выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Активируем соответствующую кнопку
+            event.target.classList.add('active');
+            
+            // Если переключились на инвентарь - обновляем его
+            if (tabName === 'inventory') {
+                loadInventory();
+            }
+        }
+
         function goToMainMenu() {
             window.location.href = 'index.html';
         }
 
-        // Загружаем данные персонажа и отображаем
+        // Загружаем данные персонажа при загрузке страницы
         document.getElementById('enduranceValue').textContent = character.endurance;
         document.getElementById('stressResistanceValue').textContent = character.stressResistance;
+        
+        // Загружаем инвентарь при первом открытии
+        loadInventory();
     </script>
 </body>
 </html>
