@@ -131,10 +131,14 @@ class Inventory {
     }
 }
 
-// Создаем глобальный экземпляр инвентаря
-const playerInventory = new Inventory();
+// Создаем глобальный экземпляр инвентаря только если он еще не существует
+if (typeof window.playerInventory === 'undefined') {
+    window.playerInventory = new Inventory();
+}
 
 // Функция для загрузки инвентаря (вызывается из character.html)
 function loadInventory() {
-    playerInventory.updateUI();
+    if (window.playerInventory) {
+        window.playerInventory.updateUI();
+    }
 }
