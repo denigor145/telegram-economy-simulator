@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продажа товаров - Экономический симулятор</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        /* Заголовок */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .money-display {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* Список товаров для продажи */
+        .sell-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .sell-category {
+            margin-bottom: 20px;
+        }
+        
+        .category-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #667eea;
+        }
+        
+        .sell-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .sell-item:hover {
+            background: #e9ecef;
+            border-color: #dc3545;
+        }
+        
+        .sell-icon {
+            font-size: 32px;
+            margin-right: 15px;
+            width: 50px;
+            text-align: center;
+        }
+        
+        .sell-info {
+            flex: 1;
+        }
+        
+        .sell-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .sell-description {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+        
+        .sell-price {
+            font-weight: bold;
+            color: #dc3545;
+            font-size: 16px;
+        }
+        
+        .sell-quantity {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .sell-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+        
+        .sell-btn:hover {
+            background: #c82333;
+            transform: scale(1.05);
+        }
+        
+        .sell-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Панель действий */
+        .action-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .action-btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        /* Сообщение о продаже */
+        .sell-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+        
+        /* Статистика продаж */
+        .sell-stats {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stats-item {
+            display: inline-block;
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        
+        .stats-value {
+            font-weight: bold;
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="header">
+            <h1>💰 Продажа товаров</h1>
+            <div class="money-display" id="moneyDisplay">0 ₽</div>
+        </div>
+        
+        <!-- Статистика -->
+        <div class="sell-stats">
+            <div class="stats-item">
+                Предметов: <span class="stats-value" id="totalItems">0</span>
+            </div>
+            <div class="stats-item">
+                Общая стоимость: <span class="stats-value" id="totalValue">0 ₽</span>
+            </div>
+        </div>
+        
+        <!-- Список товаров для продажи -->
+        <div class="sell-list" id="sellList">
+            <!-- Товары будут загружены через JavaScript -->
+        </div>
+        
+        <!-- Панель действий -->
+        <div class="action-panel">
+            <button class="action-btn" onclick="goToMallEntrance()">🏬 В торговый центр</button>
+            <button class="action-btn btn-back" onclick="goToMainMenu()">🏠 В главное меню</button>
+        </div>
+    </div>
+
+    <!-- Сообщение о продаже -->
+    <div class="sell-message" id="sellMessage">
+        Товар успешно продан!
+    </div>
+
+    <script src="js/inventory.js"></script>
+    <script>
+        // Загрузка товаров для продажи
+        function loadSellItems() {
+            const sellList = document.getElementById('sellList');
+            
+            if (!window.playerInventory) {
+                sellList.innerHTML = '<div style="text-align: center; padding: 40px; color: #6c757d;">Инвентарь не загружен</div>';
+                return;
+            }
+
+            const items = window.playerInventory.getAllItems();
+            
+            if (Object.keys(items).length === 0) {
+                sellList.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #6c757d;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
+                        <div>Инвентарь пуст</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Купите товары в магазине или получите в награду!</div>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+
+            // Группируем товары по категориям
+            const categories = {
+                furniture: { name: "🛋️ Мебель", items: [] },
+                appliances: { name: "🔌 Техника", items: [] },
+                kitchen: { name: "🍳 Кухня", items: [] },
+                bathroom: { name: "🚿 Ванная", items: [] },
+                decor: { name: "🎨 Декор", items: [] },
+                other: { name: "📦 Прочее", items: [] }
+            };
+
+            // Распределяем товары по категориям
+            for (const [itemId, quantity] of Object.entries(items)) {
+                const item = {
+                    id: itemId,
+                    name: window.playerInventory.getItemDisplayName(itemId),
+                    icon: window.playerInventory.getItemIcon(itemId),
+                    description: window.playerInventory.getItemDescription(itemId),
+                    quantity: quantity,
+                    sellPrice: calculateSellPrice(itemId)
+                };
+
+                // Определяем категорию
+                let category = 'other';
+                if (['bed', 'sofa', 'table', 'bookshelf', 'cabinet', 'dresser'].includes(itemId)) {
+                    category = 'furniture';
+                } else if (['fridge', 'tv', 'computer', 'microwave', 'kettle'].includes(itemId)) {
+                    category = 'appliances';
+                } else if (['stove', 'dining_table', 'sink'].includes(itemId)) {
+                    category = 'kitchen';
+                } else if (['bathtub', 'toilet', 'bathroom_sink'].includes(itemId)) {
+                    category = 'bathroom';
+                } else if (['mirror', 'shoe_rack', 'carpet', 'lamp'].includes(itemId)) {
+                    category = 'decor';
+                }
+
+                categories[category].items.push(item);
+            }
+
+            // Отображаем категории с товарами
+            sellList.innerHTML = '';
+
+            for (const [categoryKey, categoryData] of Object.entries(categories)) {
+                if (categoryData.items.length > 0) {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = 'sell-category';
+                    categoryElement.innerHTML = `
+                        <div class="category-title">${categoryData.name}</div>
+                    `;
+
+                    categoryData.items.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'sell-item';
+                        itemElement.innerHTML = `
+                            <div class="sell-icon">${item.icon}</div>
+                            <div class="sell-info">
+                                <div class="sell-name">${item.name}</div>
+                                <div class="sell-description">${item.description}</div>
+                                <div class="sell-price">${item.sellPrice} ₽</div>
+                                <div class="sell-quantity">Количество: ${item.quantity}</div>
+                            </div>
+                            <button class="sell-btn" onclick="sellItem('${item.id}', ${item.sellPrice})">
+                                Продать
+                            </button>
+                        `;
+                        categoryElement.appendChild(itemElement);
+                    });
+
+                    sellList.appendChild(categoryElement);
+                }
+            }
+
+            updateStats();
+        }
+
+        // Расчет цены продажи
+        function calculateSellPrice(itemId) {
+            // Для предметов из магазина - 50% от цены покупки
+            const shopPrice = window.playerInventory.getItemPrice(itemId);
+            if (shopPrice > 0) {
+                return Math.floor(shopPrice * 0.5);
+            }
+            
+            // Для дропа с соперников - фиксированная цена 50 денег
+            return 50;
+        }
+
+        // Продажа товара
+        function sellItem(itemId, price) {
+            if (!window.playerInventory) {
+                alert('Ошибка: инвентарь не загружен!');
+                return;
+            }
+
+            if (!window.playerInventory.hasItem(itemId)) {
+                alert('У вас нет этого предмета!');
+                return;
+            }
+
+            // Удаляем предмет из инвентаря
+            window.playerInventory.removeItem(itemId, 1);
+            
+            // Добавляем деньги
+            window.playerInventory.addMoney(price);
+            
+            // Показываем сообщение
+            const itemName = window.playerInventory.getItemDisplayName(itemId);
+            showSellMessage(`Вы продали: ${itemName} за ${price} ₽`);
+            
+            // Обновляем интерфейс
+            updateMoneyDisplay();
+            loadSellItems(); // Перезагружаем список
+        }
+
+        // Показать сообщение о продаже
+        function showSellMessage(message) {
+            const messageElement = document.getElementById('sellMessage');
+            messageElement.textContent = message;
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 2000);
+        }
+
+        // Обновить отображение денег
+        function updateMoneyDisplay() {
+            if (window.playerInventory) {
+                document.getElementById('moneyDisplay').textContent = window.playerInventory.money + ' ₽';
+            }
+        }
+
+        // Обновить статистику
+        function updateStats() {
+            if (window.playerInventory) {
+                const stats = window.playerInventory.getStats();
+                document.getElementById('totalItems').textContent = stats.totalItems;
+                document.getElementById('totalValue').textContent = stats.calculateTotalValue() + ' ₽';
+            }
+        }
+
+        // Вернуться в торговый центр
+        function goToMallEntrance() {
+            window.location.href = 'mall-entrance.html';
+        }
+
+        // Вернуться в главное меню
+        function goToMainMenu() {
+            window.location.href = 'index.html';
+        }
+
+        // Инициализация при загрузке
+        window.onload = function() {
+            loadSellItems();
+            updateMoneyDisplay();
+        };
+    </script>
+</body>
+</html>
