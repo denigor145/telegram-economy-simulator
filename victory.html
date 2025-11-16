@@ -91,8 +91,8 @@
     <script src="js/opponents-data.js"></script>
     <script src="js/inventory.js"></script>
     <script>
-        // Инициализация инвентаря
-        const playerInventory = new Inventory();
+        // НЕ создаем новый инвентарь, используем существующий из game.html
+        // playerInventory уже объявлен в inventory.js
         
         function getOpponentById(id) {
             return opponents.find(opponent => opponent.id === parseInt(id));
@@ -165,7 +165,9 @@
             document.getElementById('totalReward').textContent = `Всего: ${totalMoney} денег`;
             
             // Сохраняем базовую награду
-            playerInventory.addMoney(totalMoney);
+            if (window.playerInventory) {
+                window.playerInventory.addMoney(totalMoney);
+            }
         }
 
         function getItemIcon(itemName) {
@@ -193,15 +195,19 @@
         }
 
         function saveRewards(money, items) {
-            // Добавляем деньги в инвентарь
-            playerInventory.addMoney(money);
-            
-            // Добавляем предметы в инвентарь
-            items.forEach(item => {
-                playerInventory.addItem(item.name, 1);
-            });
-            
-            console.log('Награды сохранены в инвентарь:', { money, items });
+            // Добавляем деньги в инвентарь (используем существующий экземпляр)
+            if (window.playerInventory) {
+                window.playerInventory.addMoney(money);
+                
+                // Добавляем предметы в инвентарь
+                items.forEach(item => {
+                    window.playerInventory.addItem(item.name, 1);
+                });
+                
+                console.log('Награды сохранены в инвентарь:', { money, items });
+            } else {
+                console.error('Инвентарь не найден!');
+            }
         }
 
         function playAgain() {
