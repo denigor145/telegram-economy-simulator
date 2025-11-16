@@ -121,40 +121,68 @@
             text-align: right;
         }
         
-        /* Полоса жизни соперника - на всю ширину с отступами */
-        .opponent-health {
-            position: fixed;
-            top: 80px;
-            left: 10px;
-            right: 10px;
-            width: calc(100% - 20px);
-            z-index: 10;
-        }
-        
-        .health-bar { 
-            background: rgba(255,255,255,0.2); 
-            height: 25px;
-            border-radius: 12px; 
-            position: relative; 
-            overflow: hidden;
-        }
-        
-        .health-fill { 
-            background: linear-gradient(90deg, #f44336, #ef5350); 
-            height: 100%; 
-            width: 100%; 
-            border-radius: 12px; 
-            transition: width 0.5s ease;
-        }
-        
-        .health-text { 
-            position: absolute; 
-            top: 50%; 
-            right: 15px;
-            transform: translateY(-50%); 
-            font-size: 14px;
-            font-weight: bold;
-        }
+        /* Полоса жизни соперника - ТОНКАЯ С ГРАДИЕНТОМ */
+.opponent-health {
+    position: fixed;
+    top: 80px;
+    left: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    z-index: 10;
+}
+
+.health-bar { 
+    background: rgba(0, 0, 0, 0.3); 
+    height: 16px;
+    border-radius: 8px;
+    position: relative; 
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.health-fill { 
+    height: 100%; 
+    width: 100%; 
+    border-radius: 8px; 
+    transition: width 0.3s ease;
+    background: linear-gradient(90deg, 
+        #4CAF50 0%, 
+        #8BC34A 20%, 
+        #FFEB3B 40%, 
+        #FF9800 60%, 
+        #FF5722 80%, 
+        #f44336 100%
+    );
+    position: relative;
+}
+
+.health-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255,255,255,0.2) 50%, 
+        transparent 100%
+    );
+    border-radius: 8px;
+}
+
+.health-text { 
+    position: absolute; 
+    top: 50%; 
+    right: 8px;
+    transform: translateY(-50%); 
+    font-size: 11px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+    color: white;
+    letter-spacing: 0.5px;
+}
         
         /* Кнопки умений - в один ряд */
         .skills-container {
