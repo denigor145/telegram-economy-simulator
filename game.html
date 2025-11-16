@@ -134,6 +134,20 @@
             z-index: 10;
         }
 
+        .opponent-info {
+            position: absolute;
+            top: -12px;
+            left: 8px;
+            font-size: 5px;
+            color: #FFD700;
+            font-weight: bold;
+            text-shadow: 
+                1px 1px 1px rgba(0,0,0,0.8),
+                -1px -1px 1px rgba(0,0,0,0.8);
+            letter-spacing: 0.3px;
+            z-index: 11;
+        }
+
         .health-bar { 
             background: #2a2a2a;
             height: 14px;
@@ -146,6 +160,7 @@
                 inset 0 -1px 2px rgba(255, 255, 255, 0.1),
                 0 1px 3px rgba(0, 0, 0, 0.5);
             border-radius: 0;
+            margin-top: 5px;
         }
 
         .health-fill { 
@@ -346,6 +361,7 @@
     
     <!-- Полоса жизни соперника -->
     <div class="opponent-health">
+        <div class="opponent-info" id="opponentInfo">Екатерина Марковна • Уровень 1</div>
         <div class="health-bar">
             <div class="health-fill" id="healthFill"></div>
             <span class="health-text" id="healthText">100/100</span>
@@ -570,7 +586,7 @@
             updateGlobalCooldownIndicator();
         }
         
-        // Функция для обновления цвета полосы здоровья (ИСПРАВЛЕННАЯ)
+        // Функция для обновления цвета полосы здоровья
         function updateHealthBarColor() {
             if (!currentOpponent) return;
             
@@ -608,6 +624,16 @@
             }
         }
         
+        // Функция для обновления информации о сопернике
+        function updateOpponentInfo() {
+            if (!currentOpponent) return;
+            
+            const opponentInfo = document.getElementById('opponentInfo');
+            // Можно добавить уровень на основе сложности или других параметров
+            const level = Math.floor(Math.random() * 5) + 1; // Случайный уровень от 1 до 5
+            opponentInfo.textContent = `${currentOpponent.name} • Уровень ${level}`;
+        }
+        
         function selectRandomOpponent() {
             const randomIndex = Math.floor(Math.random() * opponents.length);
             currentOpponent = {...opponents[randomIndex]};
@@ -616,6 +642,7 @@
             
             updateUI();
             updateOpponentAvatar();
+            updateOpponentInfo(); // Добавляем обновление информации
         }
         
         function updateOpponentAvatar() {
