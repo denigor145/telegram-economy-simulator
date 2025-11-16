@@ -91,9 +91,6 @@
     <script src="js/opponents-data.js"></script>
     <script src="js/inventory.js"></script>
     <script>
-        // НЕ создаем новый инвентарь, используем существующий из game.html
-        // playerInventory уже объявлен в inventory.js
-        
         function getOpponentById(id) {
             return opponents.find(opponent => opponent.id === parseInt(id));
         }
@@ -104,7 +101,6 @@
             const opponent = getOpponentById(opponentId);
 
             if (!opponent) {
-                // Если нет ID соперника, показываем стандартные награды
                 showDefaultRewards();
                 return;
             }
@@ -113,10 +109,8 @@
             let totalMoney = 0;
             const earnedItems = [];
 
-            // Обрабатываем дроп
             opponent.drops.forEach(drop => {
                 if (drop.name === 'money') {
-                    // Генерируем случайную сумму денег
                     const moneyEarned = Math.floor(Math.random() * (drop.max - drop.min + 1)) + drop.min;
                     totalMoney += moneyEarned;
                     
@@ -128,7 +122,6 @@
                     `;
                     rewardsList.appendChild(moneyElement);
                 } else {
-                    // Проверяем выпадение предмета по шансу
                     if (Math.random() * 100 <= drop.chance) {
                         earnedItems.push(drop);
                         
@@ -143,16 +136,14 @@
                 }
             });
 
-            // Показываем общую сумму
             document.getElementById('totalReward').textContent = `Всего: ${totalMoney} денег`;
 
-            // Сохраняем награды в инвентарь
             saveRewards(totalMoney, earnedItems);
         }
 
         function showDefaultRewards() {
             const rewardsList = document.getElementById('rewardsList');
-            const totalMoney = 50; // Базовая награда
+            const totalMoney = 50;
             
             const moneyElement = document.createElement('div');
             moneyElement.className = 'reward-item';
@@ -164,7 +155,6 @@
             
             document.getElementById('totalReward').textContent = `Всего: ${totalMoney} денег`;
             
-            // Сохраняем базовую награду
             if (window.playerInventory) {
                 window.playerInventory.addMoney(totalMoney);
             }
@@ -195,11 +185,9 @@
         }
 
         function saveRewards(money, items) {
-            // Добавляем деньги в инвентарь (используем существующий экземпляр)
             if (window.playerInventory) {
                 window.playerInventory.addMoney(money);
                 
-                // Добавляем предметы в инвентарь
                 items.forEach(item => {
                     window.playerInventory.addItem(item.name, 1);
                 });
@@ -211,7 +199,6 @@
         }
 
         function playAgain() {
-            // Возвращаемся к игре с тем же соперником или случайным
             const urlParams = new URLSearchParams(window.location.search);
             const opponentId = urlParams.get('id');
             
@@ -226,7 +213,6 @@
             window.location.href = 'index.html';
         }
 
-        // Рассчитываем награды при загрузке страницы
         calculateRewards();
     </script>
 </body>
