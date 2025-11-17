@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Открытие магазина - Экономический симулятор</title>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        /* Заголовок */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .balance-info {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* Список магазинов */
+        .shops-list {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .shop-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .shop-card:hover {
+            border-color: #667eea;
+            background: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .shop-card.premium {
+            border-color: #ffd700;
+            background: linear-gradient(135deg, #fff9e6, #fff);
+        }
+        
+        .shop-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .shop-name {
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .shop-price {
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        
+        .shop-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            font-size: 16px;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+        
+        .buy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .buy-btn:hover {
+            background: #218838;
+            transform: scale(1.02);
+        }
+        
+        .buy-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Управление магазином */
+        .shop-management {
+            padding: 20px;
+            display: none;
+        }
+        
+        .shop-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .shop-finances {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .finance-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .finance-value {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .finance-label {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+        
+        .positive {
+            color: #28a745;
+        }
+        
+        .negative {
+            color: #dc3545;
+        }
+        
+        /* Вкладки управления */
+        .management-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .management-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .management-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Торговый зал */
+        .workplaces {
+            margin-bottom: 20px;
+        }
+        
+        .workplace-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .workplace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .workplace-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .assign-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .assigned-worker {
+            background: #d4edda;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        /* Склад */
+        .warehouse-stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .product-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .product-icon {
+            font-size: 24px;
+        }
+        
+        .product-quantity {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .buy-product-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        /* Кнопки */
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Сообщения */
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏪 Открытие магазина</h1>
+            <div class="balance-info">
+                Баланс: <span id="currentBalance">0</span> ₽
+            </div>
+        </div>
+        
+        <!-- Выбор магазина -->
+        <div id="shopSelection" class="shops-list">
+            <div class="shop-card" data-shop-type="small">
+                <div class="shop-header">
+                    <div class="shop-name">
+                        <span>🛒</span>
+                        Маленький магазин
+                    </div>
+                    <div class="shop-price">10,000 ₽</div>
+                </div>
+                <div class="shop-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Рабочих места</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">50</div>
+                        <div class="stat-label">Вместимость склада</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">500 ₽/день</div>
+                        <div class="stat-label">Базовая прибыль</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">★☆☆☆☆</div>
+                        <div class="stat-label">Уровень престижа</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyShop('small', 10000, 'Маленький магазин')">
+                    Купить за 10,000 ₽
+                </button>
+            </div>
+            
+            <div class="shop-card" data-shop-type="medium">
+                <div class="shop-header">
+                    <div class="shop-name">
+                        <span>🏬</span>
+                        Средний магазин
+                    </div>
+                    <div class="shop-price">25,000 ₽</div>
+                </div>
+                <div class="shop-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Рабочих места</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">Вместимость склада</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">1,200 ₽/день</div>
+                        <div class="stat-label">Базовая прибыль</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">★★☆☆☆</div>
+                        <div class="stat-label">Уровень престижа</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyShop('medium', 25000, 'Средний магазин')">
+                    Купить за 25,000 ₽
+                </button>
+            </div>
+            
+            <div class="shop-card" data-shop-type="large">
+                <div class="shop-header">
+                    <div class="shop-name">
+                        <span>🏢</span>
+                        Большой магазин
+                    </div>
+                    <div class="shop-price">50,000 ₽</div>
+                </div>
+                <div class="shop-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">Рабочих места</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">200</div>
+                        <div class="stat-label">Вместимость склада</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">2,500 ₽/день</div>
+                        <div class="stat-label">Базовая прибыль</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">★★★☆☆</div>
+                        <div class="stat-label">Уровень престижа</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyShop('large', 50000, 'Большой магазин')">
+                    Купить за 50,000 ₽
+                </button>
+            </div>
+            
+            <div class="shop-card premium" data-shop-type="premium">
+                <div class="shop-header">
+                    <div class="shop-name">
+                        <span>🌟</span>
+                        Премиум магазин
+                    </div>
+                    <div class="shop-price">100,000 ₽</div>
+                </div>
+                <div class="shop-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Рабочих места</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">500</div>
+                        <div class="stat-label">Вместимость склада</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">5,000 ₽/день</div>
+                        <div class="stat-label">Базовая прибыль</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">★★★★★</div>
+                        <div class="stat-label">Уровень престижа</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyShop('premium', 100000, 'Премиум магазин')">
+                    Купить за 100,000 ₽
+                </button>
+            </div>
+        </div>
+        
+        <!-- Управление магазином -->
+        <div id="shopManagement" class="shop-management">
+            <div class="shop-info">
+                <h3 id="currentShopName">Магазин</h3>
+                <div class="shop-finances">
+                    <div class="finance-item">
+                        <div class="finance-value positive" id="dailyIncome">+0 ₽</div>
+                        <div class="finance-label">Доход в день</div>
+                    </div>
+                    <div class="finance-item">
+                        <div class="finance-value negative" id="dailyExpenses">-0 ₽</div>
+                        <div class="finance-label">Расходы в день</div>
+                    </div>
+                    <div class="finance-item">
+                        <div class="finance-value" id="dailyProfit">0 ₽</div>
+                        <div class="finance-label">Прибыль в день</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="management-tabs">
+                <div class="management-tab active" onclick="switchManagementTab('showroom')">🛍️ Торговый зал</div>
+                <div class="management-tab" onclick="switchManagementTab('warehouse')">📦 Склад</div>
+            </div>
+            
+            <!-- Вкладка Торговый зал -->
+            <div id="showroom-tab" class="tab-content active">
+                <div class="workplaces">
+                    <h4>Рабочие места</h4>
+                    <div id="workplacesList">
+                        <!-- Рабочие места будут загружены здесь -->
+                    </div>
+                </div>
+                
+                <div class="available-workers">
+                    <h4>Доступные сотрудники</h4>
+                    <div id="workersList">
+                        <!-- Список сотрудников будет загружен здесь -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Вкладка Склад -->
+            <div id="warehouse-tab" class="tab-content">
+                <div class="warehouse-stats">
+                    <div>Заполненность: <span id="warehouseUsage">0</span>/<span id="warehouseCapacity">0</span></div>
+                    <div>Свободно: <span id="warehouseFree">0</span> мест</div>
+                </div>
+                
+                <div class="products-list">
+                    <h4>Товары на складе</h4>
+                    <div id="warehouseProducts">
+                        <!-- Товары на складе будут загружены здесь -->
+                    </div>
+                </div>
+                
+                <div class="buy-products">
+                    <h4>Закупить товары</h4>
+                    <div id="productsToBuy">
+                        <!-- Товары для закупки будут загружены здесь -->
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn-back" onclick="backToShopSelection()">← К выбору магазина</button>
+        </div>
+        
+        <button class="btn-back" onclick="goToMallEntrance()">← В торговый центр</button>
+    </div>
+
+    <!-- Сообщения -->
+    <div class="message" id="successMessage">
+        Операция выполнена успешно!
+    </div>
+
+    <script src="js/inventory.js"></script>
+    <script>
+        // Данные магазина
+        let playerShop = null;
+        const shopTypes = {
+            small: { workplaces: 2, capacity: 50, baseIncome: 500, level: 1 },
+            medium: { workplaces: 4, capacity: 100, baseIncome: 1200, level: 2 },
+            large: { workplaces: 6, capacity: 200, baseIncome: 2500, level: 3 },
+            premium: { workplaces: 8, capacity: 500, baseIncome: 5000, level: 5 }
+        };
+
+        // Товары для магазина
+        const shopProducts = [
+            { id: 'bread', name: 'Хлеб', icon: '🍞', price: 50, profit: 20 },
+            { id: 'milk', name: 'Молоко', icon: '🥛', price: 80, profit: 30 },
+            { id: 'eggs', name: 'Яйца', icon: '🥚', price: 120, profit: 40 },
+            { id: 'meat', name: 'Мясо', icon: '🥩', price: 300, profit: 100 },
+            { id: 'fish', name: 'Рыба', icon: '🐟', price: 250, profit: 80 },
+            { id: 'vegetables', name: 'Овощи', icon: '🥦', price: 150, profit: 50 }
+        ];
+
+        // Загрузка при старте
+        window.onload = function() {
+            updateBalanceDisplay();
+            updateBuyButtons();
+            loadPlayerShop();
+        };
+
+        // Обновить отображение баланса
+        function updateBalanceDisplay() {
+            if (window.playerInventory) {
+                document.getElementById('currentBalance').textContent = window.playerInventory.money.toLocaleString();
+            }
+        }
+
+        // Обновить кнопки покупки магазинов
+        function updateBuyButtons() {
+            const shopCards = document.querySelectorAll('.shop-card');
+            
+            shopCards.forEach(card => {
+                const price = getShopPrice(card.getAttribute('data-shop-type'));
+                const buyBtn = card.querySelector('.buy-btn');
+                
+                if (window.playerInventory.money < price) {
+                    buyBtn.disabled = true;
+                    buyBtn.textContent = 'Недостаточно средств';
+                } else {
+                    buyBtn.disabled = false;
+                    buyBtn.textContent = `Купить за ${price.toLocaleString()} ₽`;
+                }
+            });
+        }
+
+        // Получить цену магазина по типу
+        function getShopPrice(shopType) {
+            const prices = {
+                small: 10000,
+                medium: 25000,
+                large: 50000,
+                premium: 100000
+            };
+            return prices[shopType] || 0;
+        }
+
+        // Покупка магазина
+        function buyShop(shopType, price, shopName) {
+            if (!window.playerInventory) {
+                alert('Ошибка: инвентарь не загружен!');
+                return;
+            }
+
+            if (window.playerInventory.money < price) {
+                alert('Недостаточно денег для покупки магазина!');
+                return;
+            }
+
+            // Списываем деньги
+            window.playerInventory.money -= price;
+            
+            // Создаем магазин
+            playerShop = {
+                type: shopType,
+                name: shopName,
+                price: price,
+                purchaseDate: new Date().toISOString(),
+                workplaces: Array(shopTypes[shopType].workplaces).fill(null),
+                warehouse: {},
+                capacity: shopTypes[shopType].capacity
+            };
+            
+            // Сохраняем магазин
+            savePlayerShop();
+            
+            // Переключаем на управление магазином
+            showShopManagement();
+            
+            // Обновляем баланс
+            updateBalanceDisplay();
+            
+            // Показываем сообщение
+            showMessage(`Поздравляем! Вы открыли ${shopName}`);
+        }
+
+        // Показать управление магазином
+        function showShopManagement() {
+            document.getElementById('shopSelection').style.display = 'none';
+            document.getElementById('shopManagement').style.display = 'block';
+            
+            // Обновляем информацию о магазине
+            updateShopInfo();
+            loadWorkplaces();
+            loadAvailableWorkers();
+            loadWarehouse();
+        }
+
+        // Вернуться к выбору магазина
+        function backToShopSelection() {
+            document.getElementById('shopSelection').style.display = 'block';
+            document.getElementById('shopManagement').style.display = 'none';
+        }
+
+        // Переключение вкладок управления
+        function switchManagementTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Убрать активный класс со всех кнопок вкладок
+            document.querySelectorAll('.management-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Активировать соответствующую кнопку
+            event.target.classList.add('active');
+        }
+
+        // Обновить информацию о магазине
+        function updateShopInfo() {
+            if (!playerShop) return;
+            
+            document.getElementById('currentShopName').textContent = playerShop.name;
+            
+            // Расчет доходов и расходов
+            const income = calculateDailyIncome();
+            const expenses = calculateDailyExpenses();
+            const profit = income - expenses;
+            
+            document.getElementById('dailyIncome').textContent = `+${income.toLocaleString()} ₽`;
+            document.getElementById('dailyExpenses').textContent = `-${expenses.toLocaleString()} ₽`;
+            document.getElementById('dailyProfit').textContent = `${profit.toLocaleString()} ₽`;
+            document.getElementById('dailyProfit').className = `finance-value ${profit >= 0 ? 'positive' : 'negative'}`;
+        }
+
+        // Расчет ежедневного дохода
+        function calculateDailyIncome() {
+            if (!playerShop) return 0;
+            
+            let income = shopTypes[playerShop.type].baseIncome;
+            
+            // Добавляем доход от товаров
+            for (const productId in playerShop.warehouse) {
+                const product = shopProducts.find(p => p.id === productId);
+                if (product) {
+                    income += playerShop.warehouse[productId] * product.profit;
+                }
+            }
+            
+            return income;
+        }
+
+        // Расчет ежедневных расходов
+        function calculateDailyExpenses() {
+            if (!playerShop) return 0;
+            
+            let expenses = 0;
+            
+            // Зарплаты сотрудников
+            playerShop.workplaces.forEach(worker => {
+                if (worker) {
+                    // Базовая зарплата 200 ₽ в день за работника
+                    expenses += 200;
+                }
+            });
+            
+            return expenses;
+        }
+
+        // Загрузить рабочие места
+        function loadWorkplaces() {
+            if (!playerShop) return;
+            
+            const workplacesList = document.getElementById('workplacesList');
+            workplacesList.innerHTML = '';
+            
+            playerShop.workplaces.forEach((worker, index) => {
+                const workplaceCard = document.createElement('div');
+                workplaceCard.className = 'workplace-card';
+                
+                workplaceCard.innerHTML = `
+                    <div class="workplace-header">
+                        <div class="workplace-name">Рабочее место ${index + 1}</div>
+                        ${worker ? 
+                            `<div class="assigned-worker">${worker.name}</div>` :
+                            `<button class="assign-btn" onclick="openWorkerAssignment(${index})">Назначить</button>`
+                        }
+                    </div>
+                    ${worker ? `
+                        <div style="font-size: 12px; color: #6c757d;">
+                            Специальность: ${getWorkerSpecialty(worker.id)}
+                        </div>
+                    ` : ''}
+                `;
+                
+                workplacesList.appendChild(workplaceCard);
+            });
+        }
+
+        // Загрузить доступных сотрудников
+        function loadAvailableWorkers() {
+            const workersList = document.getElementById('workersList');
+            workersList.innerHTML = '';
+            
+            const hiredBots = JSON.parse(localStorage.getItem('playerHiredBots') || '[]');
+            const assignedWorkers = playerShop.workplaces.filter(worker => worker !== null);
+            
+            // Фильтруем сотрудников, которые еще не назначены
+            const availableWorkers = hiredBots.filter(worker => 
+                !assignedWorkers.find(assigned => assigned.id === worker.id)
+            );
+            
+            if (availableWorkers.length === 0) {
+                workersList.innerHTML = '<div style="text-align: center; color: #6c757d; padding: 20px;">Нет доступных сотрудников</div>';
+                return;
+            }
+            
+            availableWorkers.forEach(worker => {
+                const workerElement = document.createElement('div');
+                workerElement.className = 'workplace-card';
+                workerElement.innerHTML = `
+                    <div class="workplace-header">
+                        <div class="workplace-name">${worker.name}</div>
+                        <div style="font-size: 12px; color: #667eea;">${getWorkerSpecialty(worker.id)}</div>
+                    </div>
+                    <div style="font-size: 11px; color: #6c757d;">
+                        Уровень: ${getWorkerLevel(worker.id)} • Стоимость найма: ${worker.price} ₽
+                    </div>
+                `;
+                workersList.appendChild(workerElement);
+            });
+        }
+
+        // Получить специальность работника
+        function getWorkerSpecialty(workerId) {
+            if (workerId.includes('seller')) return 'Продавец';
+            if (workerId.includes('stocker')) return 'Кладовщик';
+            return 'Сотрудник';
+        }
+
+        // Получить уровень работника
+        function getWorkerLevel(workerId) {
+            const level = workerId.split('_')[1];
+            return level || '1';
+        }
+
+        // Назначить сотрудника на рабочее место
+        function openWorkerAssignment(workplaceIndex) {
+            const hiredBots = JSON.parse(localStorage.getItem('playerHiredBots') || '[]');
+            const assignedWorkers = playerShop.workplaces.filter(worker => worker !== null);
+            const availableWorkers = hiredBots.filter(worker => 
+                !assignedWorkers.find(assigned => assigned.id === worker.id)
+            );
+            
+            if (availableWorkers.length === 0) {
+                alert('Нет доступных сотрудников для назначения!');
+                return;
+            }
+            
+            // Для простоты назначаем первого доступного сотрудника
+            const workerToAssign = availableWorkers[0];
+            playerShop.workplaces[workplaceIndex] = workerToAssign;
+            
+            // Сохраняем изменения
+            savePlayerShop();
+            
+            // Обновляем интерфейс
+            loadWorkplaces();
+            loadAvailableWorkers();
+            updateShopInfo();
+            
+            showMessage(`${workerToAssign.name} назначен на рабочее место ${workplaceIndex + 1}`);
+        }
+
+        // Загрузить склад
+        function loadWarehouse() {
+            if (!playerShop) return;
+            
+            const warehouseProducts = document.getElementById('warehouseProducts');
+            const productsToBuy = document.getElementById('productsToBuy');
+            
+            // Обновляем статистику склада
+            const usedCapacity = Object.values(playerShop.warehouse).reduce((sum, qty) => sum + qty, 0);
+            const freeCapacity = playerShop.capacity - usedCapacity;
+            
+            document.getElementById('warehouseUsage').textContent = usedCapacity;
+            document.getElementById('warehouseCapacity').textContent = playerShop.capacity;
+            document.getElementById('warehouseFree').textContent = freeCapacity;
+            
+            // Товары на складе
+            warehouseProducts.innerHTML = '';
+            if (Object.keys(playerShop.warehouse).length === 0) {
+                warehouseProducts.innerHTML = '<div style="text-align: center; color: #6c757d; padding: 20px;">Склад пуст</div>';
+            } else {
+                for (const productId in playerShop.warehouse) {
+                    const product = shopProducts.find(p => p.id === productId);
+                    if (product) {
+                        const productElement = document.createElement('div');
+                        productElement.className = 'product-item';
+                        productElement.innerHTML = `
+                            <div class="product-info">
+                                <div class="product-icon">${product.icon}</div>
+                                <div>
+                                    <div>${product.name}</div>
+                                    <div style="font-size: 11px; color: #6c757d;">Прибыль: ${product.profit} ₽/шт</div>
+                                </div>
+                            </div>
+                            <div class="product-quantity">${playerShop.warehouse[productId]} шт</div>
+                        `;
+                        warehouseProducts.appendChild(productElement);
+                    }
+                }
+            }
+            
+            // Товары для закупки
+            productsToBuy.innerHTML = '';
+            shopProducts.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product-item';
+                productElement.innerHTML = `
+                    <div class="product-info">
+                        <div class="product-icon">${product.icon}</div>
+                        <div>
+                            <div>${product.name}</div>
+                            <div style="font-size: 11px; color: #6c757d;">Закупка: ${product.price} ₽</div>
+                        </div>
+                    </div>
+                    <button class="buy-product-btn" onclick="buyProduct('${product.id}', ${product.price})">
+                        Закупить
+                    </button>
+                `;
+                productsToBuy.appendChild(productElement);
+            });
+        }
+
+        // Закупить товар
+        function buyProduct(productId, price) {
+            if (!playerShop || !window.playerInventory) return;
+            
+            // Проверяем место на складе
+            const usedCapacity = Object.values(playerShop.warehouse).reduce((sum, qty) => sum + qty, 0);
+            if (usedCapacity >= playerShop.capacity) {
+                alert('Недостаточно места на складе!');
+                return;
+            }
+            
+            if (window.playerInventory.money < price) {
+                alert('Недостаточно денег для закупки товара!');
+                return;
+            }
+            
+            // Списываем деньги
+            window.playerInventory.money -= price;
+            
+            // Добавляем товар на склад
+            if (!playerShop.warehouse[productId]) {
+                playerShop.warehouse[productId] = 0;
+            }
+            playerShop.warehouse[productId] += 1;
+            
+            // Сохраняем изменения
+            savePlayerShop();
+            
+            // Обновляем интерфейс
+            updateBalanceDisplay();
+            loadWarehouse();
+            updateShopInfo();
+            
+            const product = shopProducts.find(p => p.id === productId);
+            showMessage(`Закуплен товар: ${product.name}`);
+        }
+
+        // Сохранить магазин игрока
+        function savePlayerShop() {
+            if (playerShop) {
+                localStorage.setItem('playerShop', JSON.stringify(playerShop));
+            }
+        }
+
+        // Загрузить магазин игрока
+        function loadPlayerShop() {
+            const savedShop = localStorage.getItem('playerShop');
+            if (savedShop) {
+                playerShop = JSON.parse(savedShop);
+                showShopManagement();
+            }
+        }
+
+        // Показать сообщение
+        function showMessage(text) {
+            const messageElement = document.getElementById('successMessage');
+            messageElement.textContent = text;
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                messageElement.style.display = 'none';
+            }, 2000);
+        }
+
+        // Вернуться в торговый центр
+        function goToMallEntrance() {
+            window.location.href = 'mall-entrance.html';
+        }
+    </script>
+</body>
+</html>
