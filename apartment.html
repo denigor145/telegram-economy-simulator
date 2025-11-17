@@ -130,6 +130,157 @@
         .btn-exit:hover {
             background: #5a6268;
         }
+
+        /* Модальное окно выбора мебели */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .furniture-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .furniture-item {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .furniture-item:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+
+        .furniture-item.selected {
+            background: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .furniture-item-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .furniture-item-name {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .furniture-item-description {
+            font-size: 11px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .furniture-item-quantity {
+            font-size: 12px;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #218838;
+        }
+
+        .btn-remove {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-remove:hover {
+            background: #c82333;
+        }
+
+        .btn-cancel {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background: #5a6268;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -153,15 +304,15 @@
         <div id="hallway" class="room-content">
             <h3>🚪 Коридор</h3>
             <div class="room-grid">
-                <div class="slot" onclick="manageFurniture('hallway', 0)">
+                <div class="slot" onclick="manageFurniture('hallway', 0, 'cabinet')">
                     <div class="furniture-icon" id="hallway-0">📦</div>
                     <div class="furniture-name">Шкаф</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('hallway', 1)">
+                <div class="slot" onclick="manageFurniture('hallway', 1, 'shoe_rack')">
                     <div class="furniture-icon" id="hallway-1">👟</div>
                     <div class="furniture-name">Обувница</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('hallway', 2)">
+                <div class="slot" onclick="manageFurniture('hallway', 2, 'mirror')">
                     <div class="furniture-icon" id="hallway-2">🪞</div>
                     <div class="furniture-name">Зеркало</div>
                 </div>
@@ -172,27 +323,27 @@
         <div id="room" class="room-content" style="display: none;">
             <h3>🛏️ Комната</h3>
             <div class="room-grid">
-                <div class="slot" onclick="manageFurniture('room', 0)">
+                <div class="slot" onclick="manageFurniture('room', 0, 'bed')">
                     <div class="furniture-icon" id="room-0">🛏️</div>
                     <div class="furniture-name">Кровать</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('room', 1)">
+                <div class="slot" onclick="manageFurniture('room', 1, 'table')">
                     <div class="furniture-icon" id="room-1">💻</div>
                     <div class="furniture-name">Стол</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('room', 2)">
+                <div class="slot" onclick="manageFurniture('room', 2, 'sofa')">
                     <div class="furniture-icon" id="room-2">🛋️</div>
                     <div class="furniture-name">Диван</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('room', 3)">
+                <div class="slot" onclick="manageFurniture('room', 3, 'tv')">
                     <div class="furniture-icon" id="room-3">📺</div>
                     <div class="furniture-name">Телевизор</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('room', 4)">
+                <div class="slot" onclick="manageFurniture('room', 4, 'bookshelf')">
                     <div class="furniture-icon" id="room-4">📚</div>
                     <div class="furniture-name">Книги</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('room', 5)">
+                <div class="slot" onclick="manageFurniture('room', 5, 'dresser')">
                     <div class="furniture-icon" id="room-5">🗄️</div>
                     <div class="furniture-name">Комод</div>
                 </div>
@@ -203,23 +354,23 @@
         <div id="kitchen" class="room-content" style="display: none;">
             <h3>🍳 Кухня</h3>
             <div class="room-grid">
-                <div class="slot" onclick="manageFurniture('kitchen', 0)">
+                <div class="slot" onclick="manageFurniture('kitchen', 0, 'fridge')">
                     <div class="furniture-icon" id="kitchen-0">❄️</div>
                     <div class="furniture-name">Холодильник</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('kitchen', 1)">
+                <div class="slot" onclick="manageFurniture('kitchen', 1, 'stove')">
                     <div class="furniture-icon" id="kitchen-1">🔥</div>
                     <div class="furniture-name">Плита</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('kitchen', 2)">
+                <div class="slot" onclick="manageFurniture('kitchen', 2, 'dining_table')">
                     <div class="furniture-icon" id="kitchen-2">🍽️</div>
                     <div class="furniture-name">Стол</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('kitchen', 3)">
+                <div class="slot" onclick="manageFurniture('kitchen', 3, 'microwave')">
                     <div class="furniture-icon" id="kitchen-3">📡</div>
                     <div class="furniture-name">Микроволновка</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('kitchen', 4)">
+                <div class="slot" onclick="manageFurniture('kitchen', 4, 'kettle')">
                     <div class="furniture-icon" id="kitchen-4">♨️</div>
                     <div class="furniture-name">Чайник</div>
                 </div>
@@ -230,15 +381,15 @@
         <div id="bathroom" class="room-content" style="display: none;">
             <h3>🚿 Ванная</h3>
             <div class="room-grid">
-                <div class="slot" onclick="manageFurniture('bathroom', 0)">
+                <div class="slot" onclick="manageFurniture('bathroom', 0, 'bathtub')">
                     <div class="furniture-icon" id="bathroom-0">🛁</div>
                     <div class="furniture-name">Ванна</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('bathroom', 1)">
+                <div class="slot" onclick="manageFurniture('bathroom', 1, 'toilet')">
                     <div class="furniture-icon" id="bathroom-1">🚽</div>
                     <div class="furniture-name">Унитаз</div>
                 </div>
-                <div class="slot" onclick="manageFurniture('bathroom', 2)">
+                <div class="slot" onclick="manageFurniture('bathroom', 2, 'bathroom_sink')">
                     <div class="furniture-icon" id="bathroom-2">🚰</div>
                     <div class="furniture-name">Раковина</div>
                 </div>
@@ -251,6 +402,27 @@
         </div>
     </div>
 
+    <!-- Модальное окно выбора мебели -->
+    <div id="furnitureModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Выберите мебель</div>
+                <button class="close-modal" onclick="closeFurnitureModal()">×</button>
+            </div>
+            
+            <div id="furnitureList" class="furniture-list">
+                <!-- Список мебели будет загружен здесь -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn btn-confirm" onclick="confirmFurnitureSelection()">Установить</button>
+                <button class="modal-btn btn-remove" onclick="removeFurniture()">Снять</button>
+                <button class="modal-btn btn-cancel" onclick="closeFurnitureModal()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/inventory.js"></script>
     <script>
         // Данные квартиры
         let apartment = {
@@ -261,6 +433,40 @@
                 kitchen: { slots: [null, null, null, null, null], comfort: 0 },
                 bathroom: { slots: [null, null, null], comfort: 0 }
             }
+        };
+
+        // Текущий выбранный слот
+        let currentRoom = null;
+        let currentSlot = null;
+        let currentSlotType = null;
+        let selectedFurniture = null;
+
+        // Соответствие типов слотов и товаров
+        const slotTypeMapping = {
+            // Коридор
+            'cabinet': 'cabinet',
+            'shoe_rack': 'shoe_rack',
+            'mirror': 'mirror',
+            
+            // Комната
+            'bed': 'bed',
+            'table': 'table',
+            'sofa': 'sofa',
+            'tv': 'tv',
+            'bookshelf': 'bookshelf',
+            'dresser': 'dresser',
+            
+            // Кухня
+            'fridge': 'fridge',
+            'stove': 'stove',
+            'dining_table': 'dining_table',
+            'microwave': 'microwave',
+            'kettle': 'kettle',
+            
+            // Ванная
+            'bathtub': 'bathtub',
+            'toilet': 'toilet',
+            'bathroom_sink': 'bathroom_sink'
         };
 
         // Показать комнату
@@ -280,13 +486,189 @@
         }
 
         // Управление мебелью
-        function manageFurniture(room, slot) {
-            const currentFurniture = apartment.rooms[room].slots[slot];
-            if (currentFurniture) {
-                alert(`У вас установлено: ${currentFurniture.name}\nБонус комфорта: +${currentFurniture.comfort}%`);
-            } else {
-                alert('Слот пуст. Посетите магазин мебели чтобы купить предметы!');
+        function manageFurniture(room, slot, slotType) {
+            currentRoom = room;
+            currentSlot = slot;
+            currentSlotType = slotType;
+            
+            openFurnitureModal();
+        }
+
+        // Открыть модальное окно выбора мебели
+        function openFurnitureModal() {
+            const modal = document.getElementById('furnitureModal');
+            const title = document.getElementById('modalTitle');
+            const furnitureList = document.getElementById('furnitureList');
+            
+            // Установить заголовок
+            const slotNames = {
+                'cabinet': 'Шкаф', 'shoe_rack': 'Обувница', 'mirror': 'Зеркало',
+                'bed': 'Кровать', 'table': 'Стол', 'sofa': 'Диван', 'tv': 'Телевизор',
+                'bookshelf': 'Книжный шкаф', 'dresser': 'Комод', 'fridge': 'Холодильник',
+                'stove': 'Плита', 'dining_table': 'Обеденный стол', 'microwave': 'Микроволновка',
+                'kettle': 'Чайник', 'bathtub': 'Ванна', 'toilet': 'Унитаз', 'bathroom_sink': 'Раковина'
+            };
+            
+            title.textContent = `Выберите ${slotNames[currentSlotType]}`;
+            
+            // Загрузить подходящую мебель
+            loadSuitableFurniture();
+            
+            // Показать модальное окно
+            modal.classList.remove('hidden');
+        }
+
+        // Закрыть модальное окно
+        function closeFurnitureModal() {
+            const modal = document.getElementById('furnitureModal');
+            modal.classList.add('hidden');
+            selectedFurniture = null;
+        }
+
+        // Загрузить подходящую мебель для текущего слота
+        function loadSuitableFurniture() {
+            const furnitureList = document.getElementById('furnitureList');
+            furnitureList.innerHTML = '';
+            
+            if (!window.playerInventory) {
+                furnitureList.innerHTML = '<div class="empty-message">Инвентарь не загружен</div>';
+                return;
             }
+            
+            // Получить все товары из инвентаря
+            const allItems = window.playerInventory.getAllItems();
+            const suitableItems = [];
+            
+            // Отфильтровать товары по типу слота
+            for (const [itemId, quantity] of Object.entries(allItems)) {
+                if (itemId === currentSlotType && quantity > 0) {
+                    suitableItems.push({
+                        id: itemId,
+                        name: window.playerInventory.getItemDisplayName(itemId),
+                        icon: window.playerInventory.getItemIcon(itemId),
+                        description: window.playerInventory.getItemDescription(itemId),
+                        quantity: quantity
+                    });
+                }
+            }
+            
+            // Показать сообщение, если нет подходящих товаров
+            if (suitableItems.length === 0) {
+                furnitureList.innerHTML = `
+                    <div class="empty-message">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📦</div>
+                        <div>Нет подходящей мебели</div>
+                        <div style="font-size: 12px; margin-top: 5px;">Посетите магазин чтобы купить ${getSlotTypeName(currentSlotType)}</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Отобразить подходящие товары
+            suitableItems.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'furniture-item';
+                itemElement.innerHTML = `
+                    <div class="furniture-item-icon">${item.icon}</div>
+                    <div class="furniture-item-name">${item.name}</div>
+                    <div class="furniture-item-description">${item.description}</div>
+                    <div class="furniture-item-quantity">Доступно: ${item.quantity}</div>
+                `;
+                
+                itemElement.onclick = () => selectFurniture(item.id, itemElement);
+                furnitureList.appendChild(itemElement);
+            });
+            
+            // Выделить текущую установленную мебель
+            const currentFurniture = apartment.rooms[currentRoom].slots[currentSlot];
+            if (currentFurniture) {
+                setTimeout(() => {
+                    const currentItemElement = Array.from(furnitureList.children).find(
+                        el => el.querySelector('.furniture-item-name').textContent === 
+                              window.playerInventory.getItemDisplayName(currentFurniture)
+                    );
+                    if (currentItemElement) {
+                        selectFurniture(currentFurniture, currentItemElement);
+                    }
+                }, 0);
+            }
+        }
+
+        // Выбрать мебель
+        function selectFurniture(furnitureId, element) {
+            // Снять выделение со всех элементов
+            document.querySelectorAll('.furniture-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Выделить выбранный элемент
+            element.classList.add('selected');
+            selectedFurniture = furnitureId;
+        }
+
+        // Подтвердить выбор мебели
+        function confirmFurnitureSelection() {
+            if (!selectedFurniture) {
+                alert('Пожалуйста, выберите мебель для установки');
+                return;
+            }
+            
+            // Установить мебель в слот
+            apartment.rooms[currentRoom].slots[currentSlot] = selectedFurniture;
+            
+            // Обновить интерфейс
+            updateApartmentUI();
+            
+            // Сохранить изменения
+            saveApartmentData();
+            
+            // Закрыть модальное окно
+            closeFurnitureModal();
+            
+            // Показать сообщение об успехе
+            const furnitureName = window.playerInventory.getItemDisplayName(selectedFurniture);
+            alert(`Установлено: ${furnitureName}`);
+        }
+
+        // Снять мебель
+        function removeFurniture() {
+            const currentFurniture = apartment.rooms[currentRoom].slots[currentSlot];
+            
+            if (!currentFurniture) {
+                alert('В этом слоте нет установленной мебели');
+                return;
+            }
+            
+            // Вернуть мебель в инвентарь
+            window.playerInventory.addItem(currentFurniture, 1);
+            
+            // Очистить слот
+            apartment.rooms[currentRoom].slots[currentSlot] = null;
+            
+            // Обновить интерфейс
+            updateApartmentUI();
+            
+            // Сохранить изменения
+            saveApartmentData();
+            
+            // Закрыть модальное окно
+            closeFurnitureModal();
+            
+            // Показать сообщение об успехе
+            const furnitureName = window.playerInventory.getItemDisplayName(currentFurniture);
+            alert(`Снято: ${furnitureName}`);
+        }
+
+        // Получить название типа слота
+        function getSlotTypeName(slotType) {
+            const names = {
+                'cabinet': 'шкаф', 'shoe_rack': 'обувницу', 'mirror': 'зеркало',
+                'bed': 'кровать', 'table': 'стол', 'sofa': 'диван', 'tv': 'телевизор',
+                'bookshelf': 'книжный шкаф', 'dresser': 'комод', 'fridge': 'холодильник',
+                'stove': 'плиту', 'dining_table': 'обеденный стол', 'microwave': 'микроволновку',
+                'kettle': 'чайник', 'bathtub': 'ванну', 'toilet': 'унитаз', 'bathroom_sink': 'раковину'
+            };
+            return names[slotType] || slotType;
         }
 
         // Отдых в квартире
@@ -310,6 +692,11 @@
             }
         }
 
+        // Сохранение данных квартиры
+        function saveApartmentData() {
+            localStorage.setItem('playerApartment', JSON.stringify(apartment));
+        }
+
         // Обновление интерфейса
         function updateApartmentUI() {
             document.getElementById('totalComfort').textContent = apartment.comfort + '%';
@@ -318,9 +705,39 @@
             for (const room in apartment.rooms) {
                 apartment.rooms[room].slots.forEach((furniture, index) => {
                     const iconElement = document.getElementById(`${room}-${index}`);
+                    const slotElement = iconElement.parentElement;
+                    
                     if (furniture) {
-                        iconElement.textContent = furniture.icon;
-                        iconElement.parentElement.classList.add('occupied');
+                        iconElement.textContent = window.playerInventory.getItemIcon(furniture);
+                        slotElement.classList.add('occupied');
+                    } else {
+                        // Установить иконку по умолчанию в зависимости от типа слота
+                        const defaultIcons = {
+                            'cabinet': '📦', 'shoe_rack': '👟', 'mirror': '🪞',
+                            'bed': '🛏️', 'table': '💻', 'sofa': '🛋️', 'tv': '📺',
+                            'bookshelf': '📚', 'dresser': '🗄️', 'fridge': '❄️',
+                            'stove': '🔥', 'dining_table': '🍽️', 'microwave': '📡',
+                            'kettle': '♨️', 'bathtub': '🛁', 'toilet': '🚽', 'bathroom_sink': '🚰'
+                        };
+                        
+                        // Определить тип слота для этой позиции
+                        let slotType = '';
+                        if (room === 'hallway') {
+                            const types = ['cabinet', 'shoe_rack', 'mirror'];
+                            slotType = types[index];
+                        } else if (room === 'room') {
+                            const types = ['bed', 'table', 'sofa', 'tv', 'bookshelf', 'dresser'];
+                            slotType = types[index];
+                        } else if (room === 'kitchen') {
+                            const types = ['fridge', 'stove', 'dining_table', 'microwave', 'kettle'];
+                            slotType = types[index];
+                        } else if (room === 'bathroom') {
+                            const types = ['bathtub', 'toilet', 'bathroom_sink'];
+                            slotType = types[index];
+                        }
+                        
+                        iconElement.textContent = defaultIcons[slotType] || '📦';
+                        slotElement.classList.remove('occupied');
                     }
                 });
             }
